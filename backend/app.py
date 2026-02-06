@@ -26,10 +26,8 @@ CORS(app, resources={
     }
 })
 
-# Load ML models at startup
-logger.info("Initializing ML models...")
-models.load_core_models()
-logger.info("API ready!")
+# Models will be loaded on first request (lazy loading for faster startup)
+logger.info("API server ready! Models will load on first request.")
 
 
 @app.route('/api/health', methods=['GET'])
