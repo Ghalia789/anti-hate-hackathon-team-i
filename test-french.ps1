@@ -13,7 +13,7 @@ function Test-FrenchText {
     $body = @{ text = $Text } | ConvertTo-Json
     
     try {
-        $result = Invoke-RestMethod -Uri "http://localhost:5001/api/analyze" -Method Post -Body $body -ContentType "application/json; charset=utf-8"
+        $result = Invoke-RestMethod -Uri "http://localhost:5000/api/analyze" -Method Post -Body $body -ContentType "application/json; charset=utf-8"
         
         $score = [math]::Round($result.hate_speech_score, 2)
         $color = if ($result.is_hate_speech) { "Red" } else { "Green" }

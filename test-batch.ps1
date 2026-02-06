@@ -31,7 +31,7 @@ $body = @{
 } | ConvertTo-Json
 
 try {
-    $result = Invoke-RestMethod -Uri "http://localhost:5001/api/batch-analyze" -Method Post -Body $body -ContentType "application/json; charset=utf-8"
+    $result = Invoke-RestMethod -Uri "http://localhost:5000/api/batch-analyze" -Method Post -Body $body -ContentType "application/json; charset=utf-8"
     
     Write-Host "✓ Analyse terminée!" -ForegroundColor Green
     Write-Host "  Temps total: $([math]::Round($result.processing_time_ms, 2)) ms" -ForegroundColor Gray

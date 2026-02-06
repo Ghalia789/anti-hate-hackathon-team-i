@@ -16,9 +16,7 @@ logger = logging.getLogger(__name__)
 # Global variables for models
 sentiment_model = None
 toxicity_model = None
-arabic_hate_model = None
 device = None
-arabic_model_loading = False
 
 # Supported languages
 SUPPORTED_LANGUAGES = ['fr', 'en', 'ar', 'it']
@@ -96,7 +94,7 @@ def load_core_models():
         )
         logger.info("✓ Toxicity model loaded successfully")
         
-        logger.info("Core models loaded successfully! Arabic model will load on-demand.")
+        logger.info("Core models loaded successfully! Using multilingual models for all languages.")
         return True
         
     except Exception as e:
@@ -104,49 +102,7 @@ def load_core_models():
         raise
 
 
-def get_arabic_hate_model():
-    """
-    Lazy load Arabic hate speech model when needed
-    Only loads once and caches for subsequent Arabic text
-    
-    Returns:
-        pipeline: Arabic hate speech model or None if failed
-    """
-    global arabic_hate_model, arabic_model_loading, device
-    
-    # Return if already loaded
-    if arabic_hate_model is not None:
-        return arabic_hate_model
-    
-    # Prevent concurrent loading
-    if arabic_model_loading:
-        logger.info("Arabic model is currently loading, waiting...")
-        import time
-        for _ in range(30):  # Wait up to 30 seconds
-            time.sleep(1)
-            if arabic_hate_model is not None:
-                return arabic_hate_model
-        logger.warning("Timeout waiting for Arabic model to load")
-        return None
-    
-    try:
-        arabic_model_loading = True
-        logger.info("Loading Arabic hate speech model on-demand: Hate-speech-CNERG/dehatebert-mono-arabic")
-        
-        arabic_hate_model = pipeline(
-            "text-classification",
-            model="Hate-speech-CNERG/dehatebert-mono-arabic",
-            device=device,
-            top_k=None
-        )
-        logger.info("✓ Arabic hate speech model loaded successfully")
-        return arabic_hate_model
-        
-    except Exception as e:
-        logger.warning(f"Could not load Arabic model: {e}. Will use toxicity model only.")
-        return None
-    finally:
-        arabic_model_loading = False
+
 
 
 def analyze_sentiment(text):
@@ -171,7 +127,7 @@ def analyze_sentiment(text):
 
 def analyze_toxicity(text, detected_lang):
     """
-    Analyze toxicity with combined scoring from multiple models
+    Analyze toxicity using multilingual toxicity model
     
     Args:
         text (str): Input text (max 512 chars)
@@ -189,92 +145,58 @@ def analyze_toxicity(text, detected_lang):
     toxicity_results = toxicity_model(truncated_text)[0]
     toxicity_scores = {item['label']: item['score'] for item in toxicity_results}
     
-    # Use Arabic-specific model if text is in Arabic (lazy loading)
-    arabic_scores = {}
-    arabic_model_used = False
-    
-    if detected_lang == 'ar':
-        try:
-            arabic_model = get_arabic_hate_model()
-            if arabic_model is not None:
-                arabic_results = arabic_model(truncated_text)[0]
-                arabic_scores = {item['label']: item['score'] for item in arabic_results}
-                arabic_model_used = True
-                logger.info(f"Arabic model results: {arabic_scores}")
-        except Exception as e:
-            logger.warning(f"Arabic model failed: {e}")
-    
-    # Combine scores from toxicity + arabic models
-    combined_toxic_score = calculate_combined_score(
-        toxicity_scores, 
-        arabic_scores, 
-        arabic_model_used
-    )
+    # Calculate toxicity score
+    combined_toxic_score = calculate_combined_score(toxicity_scores)
     
     # Adaptive threshold based on language
-    threshold = 0.45 if detected_lang in ['ar', 'fr', 'it'] else 0.5
+    # Lower thresholds for better detection of subtle hate speech
+    if detected_lang == 'it':
+        threshold = 0.35  # Italian needs lower threshold
+    elif detected_lang in ['ar', 'fr']:
+        threshold = 0.40  # Arabic and French
+    else:
+        threshold = 0.45  # English, Spanish, German, etc.
+    
     is_toxic = combined_toxic_score > threshold
     
     return {
         'is_toxic': is_toxic,
         'confidence': float(combined_toxic_score),
         'threshold': threshold,
-        'scores': {k: float(v) for k, v in toxicity_scores.items()},
-        'arabic_model_used': arabic_model_used
+        'scores': {k: float(v) for k, v in toxicity_scores.items()}
     }
 
 
-def calculate_combined_score(toxicity_scores, arabic_scores, arabic_model_used):
+def calculate_combined_score(toxicity_scores):
     """
-    Calculate combined toxicity score from multiple models
+    Calculate toxicity score from the multilingual toxicity model
     
     Args:
         toxicity_scores (dict): Scores from toxicity model
-        arabic_scores (dict): Scores from Arabic model (if used)
-        arabic_model_used (bool): Whether Arabic model was used
     
     Returns:
-        float: Combined normalized score
+        float: Combined toxicity score
     """
     combined_score = 0
     
-    # Weight scores: toxicity (60%) + arabic (40% if used)
-    toxicity_weight = 0.6
-    arabic_weight = 0.4 if arabic_model_used else 0
-    
-    # From toxicity model
+    # Sum all toxic indicators
     for label, score in toxicity_scores.items():
         if any(indicator in label.lower() for indicator in TOXIC_INDICATORS):
-            combined_score += score * toxicity_weight
-    
-    # From Arabic model (if used)
-    if arabic_model_used:
-        for label, score in arabic_scores.items():
-            if any(indicator in label.lower() for indicator in TOXIC_INDICATORS) or 'LABEL_1' in label:
-                combined_score += score * arabic_weight
-    
-    # Normalize combined score
-    total_weight = toxicity_weight + arabic_weight
-    if total_weight > 0:
-        combined_score = combined_score / total_weight
+            combined_score += score
     
     return combined_score
 
 
-def get_models_info(arabic_used=False):
+def get_models_info():
     """
     Get information about which models are being used
-    
-    Args:
-        arabic_used (bool): Whether Arabic model was used
     
     Returns:
         dict: Model names
     """
     return {
         'sentiment': 'cardiffnlp/twitter-xlm-roberta-base-sentiment-multilingual',
-        'toxicity': 'unitary/multilingual-toxic-xlm-roberta',
-        'arabic_hate': 'Hate-speech-CNERG/dehatebert-mono-arabic' if arabic_used else None
+        'toxicity': 'unitary/multilingual-toxic-xlm-roberta'
     }
 
 
