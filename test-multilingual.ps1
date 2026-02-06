@@ -7,7 +7,7 @@ Write-Host ""
 # Vérifier que le backend est en ligne
 Write-Host "Vérification du backend..." -ForegroundColor Yellow
 try {
-    $health = Invoke-RestMethod -Uri "http://localhost:5001/api/health" -Method Get
+    $health = Invoke-RestMethod -Uri "http://localhost:5000/api/health" -Method Get
     Write-Host "✓ Backend opérationnel" -ForegroundColor Green
     Write-Host "  Modèles chargés: $($health.models_loaded)" -ForegroundColor Gray
     Write-Host ""
@@ -30,7 +30,7 @@ function Test-Text {
     $body = @{ text = $Text } | ConvertTo-Json
     
     try {
-        $result = Invoke-RestMethod -Uri "http://localhost:5001/api/analyze" -Method Post -Body $body -ContentType "application/json; charset=utf-8"
+        $result = Invoke-RestMethod -Uri "http://localhost:5000/api/analyze" -Method Post -Body $body -ContentType "application/json; charset=utf-8"
         
         $scoreColor = if ($result.hate_speech_score -gt 50) { "Red" } else { "Green" }
         

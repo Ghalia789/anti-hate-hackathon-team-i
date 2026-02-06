@@ -22,16 +22,25 @@ COPY . .
 RUN mkdir -p /app/.cache
 ENV TRANSFORMERS_CACHE=/app/.cache
 
-# Expose port
-EXPOSE 5000
+# Pre-download models during build to avoid HuggingFace rate limits at runtime
+# This adds ~2GB to image but ensures instant startup and no download failures
+RUN python download_models.py
+
+# Expose port (Cloud Run uses 8080)
+EXPOSE 8080
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
-ENV PORT=5000
+ENV PORT=8080
+
+# Create non-root user for security
+RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
+USER appuser
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:5000/api/health', timeout=5)"
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=3 \
+    CMD python -c "import requests; requests.get('http://localhost:8080/api/health', timeout=5)"
 
-# Run with gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "1", "--threads", "4", "--timeout", "120", "app:app"]
+# Run with gunicorn (Cloud Run compatible)
+# Optimized: 2 workers, 4 threads each, timeout 120s
+CMD exec gunicorn --bind :$PORT --workers 2 --threads 4 --worker-class gthread --timeout 120 --access-logfile - --error-logfile - app:app

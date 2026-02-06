@@ -1,0 +1,170 @@
+/* Styles pour le badge de détection de hate speech */
+
+#hate-speech-badge {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    
+    display: none; /* Caché par défaut */
+    align-items: center;
+    gap: 10px;
+    
+    padding: 12px 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    
+    max-width: 400px;
+    
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* État: Quick check (détection rapide) */
+#hate-speech-badge.quick {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+}
+
+#hate-speech-badge.quick .warning-icon {
+    font-size: 20px;
+}
+
+#hate-speech-badge.quick .warning-text {
+    color: #856404;
+    font-weight: 500;
+}
+
+#hate-speech-badge.quick .status {
+    color: #856404;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+/* État: Loading (analyse en cours) */
+#hate-speech-badge.loading {
+    background: #e3f2fd;
+    border-left: 4px solid #2196f3;
+}
+
+#hate-speech-badge.loading .loader {
+    font-size: 20px;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+#hate-speech-badge.loading .warning-text {
+    color: #1565c0;
+    font-weight: 500;
+}
+
+/* État: Confirmed (hate speech détecté) */
+#hate-speech-badge.confirmed {
+    background: #ffebee;
+    border-left: 4px solid #f44336;
+}
+
+#hate-speech-badge.confirmed .warning-icon {
+    font-size: 20px;
+}
+
+#hate-speech-badge.confirmed .warning-text {
+    color: #c62828;
+    font-weight: 600;
+}
+
+#hate-speech-badge.confirmed .confidence {
+    background: #f44336;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+#hate-speech-badge.confirmed .source {
+    font-size: 11px;
+    color: #999;
+    text-transform: uppercase;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #hate-speech-badge {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+        font-size: 13px;
+    }
+}
+
+/* Mode sombre */
+@media (prefers-color-scheme: dark) {
+    #hate-speech-badge {
+        background: #2d2d2d;
+        color: #e0e0e0;
+    }
+    
+    #hate-speech-badge.quick {
+        background: #3e3e1e;
+        border-left-color: #ffeb3b;
+    }
+    
+    #hate-speech-badge.quick .warning-text,
+    #hate-speech-badge.quick .status {
+        color: #ffeb3b;
+    }
+    
+    #hate-speech-badge.loading {
+        background: #1e2e3e;
+        border-left-color: #64b5f6;
+    }
+    
+    #hate-speech-badge.loading .warning-text {
+        color: #64b5f6;
+    }
+    
+    #hate-speech-badge.confirmed {
+        background: #3e1e1e;
+        border-left-color: #ef5350;
+    }
+    
+    #hate-speech-badge.confirmed .warning-text {
+        color: #ef5350;
+    }
+}
+
+/* Overlay pour les champs de texte avec hate speech */
+.hate-speech-input-overlay {
+    position: absolute;
+    border: 2px solid #f44336;
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 9999;
+    animation: borderPulse 2s infinite;
+}
+
+@keyframes borderPulse {
+    0%, 100% { border-color: #f44336; }
+    50% { border-color: #ff8a80; }
+}
