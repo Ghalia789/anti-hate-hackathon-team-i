@@ -1,0 +1,211 @@
+.app {
+  width: 400px;
+  min-height: 500px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.header {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.header h1 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.toggle-btn {
+  padding: 8px 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.toggle-btn.active {
+  background: #44ff44;
+  color: #333;
+  border-color: #44ff44;
+}
+
+.content {
+  padding: 20px;
+}
+
+.input-section {
+  margin-bottom: 20px;
+}
+
+.text-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  margin-bottom: 12px;
+}
+
+.text-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: white;
+}
+
+.analyze-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.analyze-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.analyze-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error {
+  padding: 12px;
+  background: rgba(255, 68, 68, 0.9);
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.result-card {
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.result-card h3 {
+  font-size: 16px;
+  margin-bottom: 12px;
+  color: #667eea;
+}
+
+.result-value {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.result-value .label {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.result-value .score {
+  font-size: 18px;
+  font-weight: 700;
+  color: #667eea;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.3s ease;
+}
+
+.toxicity-status {
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: white;
+}
+
+.toxicity-scores {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.score-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.score-label {
+  width: 80px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.score-bar-container {
+  flex: 1;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.score-bar {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.score-value {
+  width: 45px;
+  text-align: right;
+  font-weight: 700;
+}
+
+.info {
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.info p {
+  margin: 0;
+}
