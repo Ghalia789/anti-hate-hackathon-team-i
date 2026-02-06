@@ -211,6 +211,31 @@ const injectStyles = () => {
       50% { background: linear-gradient(135deg, #fca5a5, #fecaca); }
     }
     
+    /* Hate word with blur effect (for existing content) */
+    .safeguard-hate-word-blur {
+      background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+      color: transparent !important;
+      text-shadow: 0 0 8px rgba(220, 38, 38, 0.8) !important;
+      filter: blur(4px) !important;
+      padding: 2px 4px !important;
+      border-radius: 4px !important;
+      transition: all 0.3s ease !important;
+      cursor: pointer !important;
+      user-select: none !important;
+    }
+    
+    .safeguard-hate-word-blur:hover {
+      filter: blur(2px) !important;
+      text-shadow: 0 0 4px rgba(220, 38, 38, 0.6) !important;
+    }
+    
+    .safeguard-hate-word-blur.revealed {
+      filter: none !important;
+      color: #dc2626 !important;
+      text-shadow: none !important;
+      background: linear-gradient(135deg, #fecaca, #fee2e2) !important;
+    }
+    
     /* Blurred toxic content in feed */
     .safeguard-blurred {
       filter: blur(8px) !important;
@@ -572,13 +597,121 @@ const injectStyles = () => {
     
     /* Input highlight borders */
     .safeguard-input-warning {
-      box-shadow: 0 0 0 3px rgba(233, 30, 140, 0.4) !important;
-      border-color: #e91e8c !important;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.5) !important;
+      border-color: #ef4444 !important;
     }
     
     .safeguard-input-safe {
       box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.4) !important;
       border-color: #00d4ff !important;
+    }
+    
+    /* Warning bar for hate speech content */
+    .safeguard-warning-bar {
+      background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+      color: white !important;
+      padding: 8px 12px !important;
+      font-size: 13px !important;
+      font-weight: 600 !important;
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      border-radius: 8px 8px 0 0 !important;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    }
+    
+    /* Mirror overlay to highlight hate words RED while typing */
+    .safeguard-mirror-container {
+      position: relative !important;
+    }
+    
+    .safeguard-mirror-overlay {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      pointer-events: none !important;
+      white-space: pre-wrap !important;
+      word-wrap: break-word !important;
+      overflow: hidden !important;
+      color: transparent !important;
+      z-index: 1 !important;
+    }
+    
+    .safeguard-mirror-overlay .safeguard-mirror-hate {
+      color: #ef4444 !important;
+      background: rgba(239, 68, 68, 0.15) !important;
+      border-bottom: 2px solid #ef4444 !important;
+      border-radius: 2px !important;
+      font-weight: 700 !important;
+      padding: 0 1px !important;
+    }
+    
+    /* Child mode blocked alert - no send option */
+    .safeguard-child-blocked-alert {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      background: rgba(0, 0, 0, 0.8) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      z-index: 2147483646 !important;
+      animation: fadeIn 0.3s ease !important;
+    }
+    
+    .safeguard-child-blocked-box {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+      border-radius: 20px !important;
+      padding: 32px !important;
+      max-width: 380px !important;
+      width: 90% !important;
+      text-align: center !important;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+      animation: slideUp 0.3s ease !important;
+      border: 2px solid #f59e0b !important;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(245, 158, 11, 0.2) !important;
+    }
+    
+    .safeguard-child-blocked-box .shield-big {
+      width: 72px !important;
+      height: 72px !important;
+      margin: 0 auto 16px !important;
+      color: #f59e0b !important;
+    }
+    
+    .safeguard-child-blocked-box h3 {
+      color: #f59e0b !important;
+      font-size: 20px !important;
+      font-weight: 700 !important;
+      margin: 0 0 12px 0 !important;
+    }
+    
+    .safeguard-child-blocked-box p {
+      color: #9ca3af !important;
+      font-size: 14px !important;
+      line-height: 1.6 !important;
+      margin: 0 0 20px 0 !important;
+    }
+    
+    .safeguard-child-blocked-box .btn-ok {
+      background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+      border: none !important;
+      color: white !important;
+      padding: 12px 40px !important;
+      border-radius: 10px !important;
+      font-size: 15px !important;
+      font-weight: 600 !important;
+      cursor: pointer !important;
+      transition: all 0.2s ease !important;
+    }
+    
+    .safeguard-child-blocked-box .btn-ok:hover {
+      transform: translateY(-2px) !important;
+      box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4) !important;
     }
   `
   document.head.appendChild(style)
@@ -621,6 +754,7 @@ const findHateWords = (text) => {
         foundWords.push({
           word: match[0],
           index: match.index,
+          length: word.length,
           language
         })
       }
@@ -628,6 +762,41 @@ const findHateWords = (text) => {
   })
   
   return { foundWords, detectedLang: lang }
+}
+
+// Highlight hate words in text - returns HTML with highlighted words
+const highlightHateWordsInText = (text, foundWords) => {
+  if (!foundWords || foundWords.length === 0) return text
+  
+  // Sort by index descending to replace from end to start
+  const sortedWords = [...foundWords].sort((a, b) => b.index - a.index)
+  let result = text
+  
+  sortedWords.forEach(({ index, word }) => {
+    const before = result.substring(0, index)
+    const after = result.substring(index + word.length)
+    result = before + `<span class="safeguard-hate-word">${word}</span>` + after
+  })
+  
+  return result
+}
+
+// Highlight hate words with blur effect for existing content
+const highlightAndBlurHateWords = (element, foundWords) => {
+  if (!foundWords || foundWords.length === 0) return
+  
+  const text = element.innerText || element.textContent
+  const sortedWords = [...foundWords].sort((a, b) => b.index - a.index)
+  
+  // Create a temporary container with highlighted words
+  let htmlContent = text
+  sortedWords.forEach(({ index, word }) => {
+    const before = htmlContent.substring(0, index)
+    const after = htmlContent.substring(index + word.length)
+    htmlContent = before + `<span class="safeguard-hate-word-blur">${word}</span>` + after
+  })
+  
+  element.innerHTML = htmlContent
 }
 
 // Create FAB element
@@ -721,12 +890,24 @@ const showSendAlert = (text, foundWords, lang, onConfirm, onCancel) => {
   })
 }
 
-// Blur content with warning overlay
-const blurContent = (element, lang) => {
+// Blur content with warning overlay - now also highlights hate words
+const blurContent = (element, lang, foundWords = []) => {
   if (element.classList.contains('safeguard-processed')) return
   element.classList.add('safeguard-processed')
   
   const messages = WARNING_MESSAGES[lang] || WARNING_MESSAGES.en
+  
+  // First, highlight the hate words in the content
+  if (foundWords.length > 0 && !isChildMode) {
+    highlightAndBlurHateWords(element, foundWords)
+    
+    // Add click handlers to reveal individual words
+    element.querySelectorAll('.safeguard-hate-word-blur').forEach(wordEl => {
+      wordEl.addEventListener('click', () => {
+        wordEl.classList.toggle('revealed')
+      })
+    })
+  }
   
   // Wrap in container
   const container = document.createElement('div')
@@ -736,8 +917,9 @@ const blurContent = (element, lang) => {
   container.appendChild(element)
   
   if (isChildMode) {
-    // Complete block for children
+    // Complete block for children - NO access at all
     element.classList.add('safeguard-child-block')
+    element.style.visibility = 'hidden'
     
     const overlay = document.createElement('div')
     overlay.className = 'safeguard-child-overlay'
@@ -748,30 +930,28 @@ const blurContent = (element, lang) => {
         </svg>
         <h4>${messages.blocked}</h4>
         <p>${messages.childBlock}</p>
+        <div style="margin-top: 12px; font-size: 12px; opacity: 0.7;">
+          🔒 ${lang === 'fr' ? 'Mode enfant activé - contenu masqué' : lang === 'ar' ? 'وضع الطفل مفعل - المحتوى مخفي' : lang === 'it' ? 'Modalità bambino attiva - contenuto nascosto' : 'Child mode active - content hidden'}
+        </div>
       </div>
     `
     container.appendChild(overlay)
   } else {
-    // Blur with reveal option for adults
-    element.classList.add('safeguard-blurred')
-    
-    const overlay = document.createElement('div')
-    overlay.className = 'safeguard-blur-overlay'
-    overlay.innerHTML = `
-      <div class="safeguard-blur-warning">
-        <h4>${messages.title}</h4>
-        <p>${messages.description}</p>
-        <button class="safeguard-reveal-btn">${lang === 'fr' ? 'Afficher le contenu' : lang === 'ar' ? 'عرض المحتوى' : lang === 'it' ? 'Mostra contenuto' : 'Reveal Content'}</button>
-      </div>
+    // For adults: words are already highlighted and blurred individually
+    // Add a subtle warning bar at the top
+    const warningBar = document.createElement('div')
+    warningBar.className = 'safeguard-warning-bar'
+    warningBar.innerHTML = `
+      <span style="display: flex; align-items: center; gap: 6px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        ${messages.title}
+      </span>
+      <span style="font-size: 11px; opacity: 0.8;">${lang === 'fr' ? 'Cliquez sur les mots flous pour révéler' : lang === 'ar' ? 'انقر على الكلمات المموهة للكشف' : lang === 'it' ? 'Clicca sulle parole sfocate per rivelare' : 'Click blurred words to reveal'}</span>
     `
-    
-    overlay.querySelector('.safeguard-reveal-btn').addEventListener('click', () => {
-      element.classList.remove('safeguard-blurred')
-      overlay.remove()
-      container.style.border = 'none'
-    })
-    
-    container.appendChild(overlay)
+    container.insertBefore(warningBar, element)
   }
 }
 
@@ -885,11 +1065,74 @@ function removeDetection() {
   document.querySelectorAll('.safeguard-toast, .safeguard-send-alert').forEach(el => el.remove())
 }
 
+// Create or update mirror overlay to show hate words in RED while typing
+function updateMirrorOverlay(element, text, foundWords) {
+  let mirror = element._safeguardMirror
+  
+  if (!mirror) {
+    // Make parent relative if needed
+    const parent = element.parentElement
+    if (parent && getComputedStyle(parent).position === 'static') {
+      parent.style.position = 'relative'
+    }
+    
+    mirror = document.createElement('div')
+    mirror.className = 'safeguard-mirror-overlay'
+    
+    // Copy styles from the input
+    const styles = getComputedStyle(element)
+    mirror.style.font = styles.font
+    mirror.style.padding = styles.padding
+    mirror.style.lineHeight = styles.lineHeight
+    mirror.style.letterSpacing = styles.letterSpacing
+    mirror.style.border = '2px solid transparent'
+    
+    element.parentElement.insertBefore(mirror, element.nextSibling)
+    element._safeguardMirror = mirror
+  }
+  
+  if (foundWords.length === 0) {
+    mirror.innerHTML = ''
+    return
+  }
+  
+  // Build highlighted HTML - hate words in red, rest transparent
+  const sortedWords = [...foundWords].sort((a, b) => a.index - b.index)
+  let html = ''
+  let lastIndex = 0
+  
+  sortedWords.forEach(({ index, word }) => {
+    // Transparent text before the hate word
+    html += `<span style="color: transparent;">${escapeHtml(text.substring(lastIndex, index))}</span>`
+    // Hate word in RED
+    html += `<span class="safeguard-mirror-hate">${escapeHtml(word)}</span>`
+    lastIndex = index + word.length
+  })
+  // Remaining text
+  html += `<span style="color: transparent;">${escapeHtml(text.substring(lastIndex))}</span>`
+  
+  mirror.innerHTML = html
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
+
+function removeMirrorOverlay(element) {
+  if (element._safeguardMirror) {
+    element._safeguardMirror.remove()
+    delete element._safeguardMirror
+  }
+}
+
 function handleTextInput(event) {
   if (!isActive) return
   
   const text = event.target.value || event.target.innerText || ''
-  if (!text || text.length < 3) return
+  if (!text || text.length < 3) {
+    removeMirrorOverlay(event.target)
+    return
+  }
   
   clearTimeout(debounceTimer)
   debounceTimer = setTimeout(() => {
@@ -900,6 +1143,9 @@ function handleTextInput(event) {
       event.target.classList.remove('safeguard-input-safe')
       updateFAB('toxic', `⚠️ ${foundWords.length} ${detectedLang === 'fr' ? 'mot(s) détecté(s)' : detectedLang === 'ar' ? 'كلمة مكتشفة' : detectedLang === 'it' ? 'parola/e rilevata/e' : 'word(s) detected'}`)
       
+      // Highlight hate words in RED using mirror overlay
+      updateMirrorOverlay(event.target, text, foundWords)
+      
       // Store for submit interception
       event.target.dataset.safeguardWords = JSON.stringify(foundWords)
       event.target.dataset.safeguardLang = detectedLang
@@ -907,6 +1153,7 @@ function handleTextInput(event) {
       event.target.classList.remove('safeguard-input-warning')
       event.target.classList.add('safeguard-input-safe')
       updateFAB('active', isChildMode ? '🛡️ Child Mode Active' : '✓ Content looks safe')
+      removeMirrorOverlay(event.target)
       delete event.target.dataset.safeguardWords
       delete event.target.dataset.safeguardLang
     }
@@ -930,38 +1177,84 @@ function handleKeyDown(event) {
     event.preventDefault()
     event.stopPropagation()
     
-    showSendAlert(
-      element.value || element.innerText,
-      foundWords,
-      lang,
-      () => {
-        // User chose to send anyway
+    if (isChildMode) {
+      // CHILD MODE: Block completely - cannot send
+      showChildBlockedAlert(lang, () => {
+        // Clear the hate words from the input
+        if (element.value !== undefined) {
+          element.value = ''
+        } else {
+          element.innerText = ''
+        }
         delete element.dataset.safeguardWords
         delete element.dataset.safeguardLang
-        
-        // Simulate Enter key
-        const enterEvent = new KeyboardEvent('keydown', {
-          key: 'Enter',
-          code: 'Enter',
-          keyCode: 13,
-          which: 13,
-          bubbles: true
-        })
-        element.dispatchEvent(enterEvent)
-        
-        // Try to click submit button
-        const form = element.closest('form')
-        if (form) {
-          const submitBtn = form.querySelector('button[type="submit"], input[type="submit"], button:not([type])')
-          if (submitBtn) submitBtn.click()
-        }
-      },
-      () => {
-        // User chose to edit - focus back on input
+        element.classList.remove('safeguard-input-warning')
+        removeMirrorOverlay(element)
         element.focus()
-      }
-    )
+      })
+    } else {
+      // ADULT MODE: Popup with Edit or Send Anyway
+      showSendAlert(
+        element.value || element.innerText,
+        foundWords,
+        lang,
+        () => {
+          // User chose to send anyway
+          delete element.dataset.safeguardWords
+          delete element.dataset.safeguardLang
+          removeMirrorOverlay(element)
+          
+          // Simulate Enter key
+          const enterEvent = new KeyboardEvent('keydown', {
+            key: 'Enter',
+            code: 'Enter',
+            keyCode: 13,
+            which: 13,
+            bubbles: true
+          })
+          element.dispatchEvent(enterEvent)
+          
+          // Try to click submit button
+          const form = element.closest('form')
+          if (form) {
+            const submitBtn = form.querySelector('button[type="submit"], input[type="submit"], button:not([type])')
+            if (submitBtn) submitBtn.click()
+          }
+        },
+        () => {
+          // User chose to edit - focus back on input
+          element.focus()
+        }
+      )
+    }
   }
+}
+
+// Child mode: completely blocked alert - NO send option
+function showChildBlockedAlert(lang, onDismiss) {
+  const messages = WARNING_MESSAGES[lang] || WARNING_MESSAGES.en
+  
+  const modal = document.createElement('div')
+  modal.className = 'safeguard-child-blocked-alert'
+  modal.innerHTML = `
+    <div class="safeguard-child-blocked-box">
+      <svg class="shield-big" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        <line x1="8" y1="8" x2="16" y2="16"/>
+        <line x1="16" y1="8" x2="8" y2="16"/>
+      </svg>
+      <h3>🚫 ${lang === 'fr' ? 'Message Bloqué' : lang === 'ar' ? 'الرسالة محظورة' : lang === 'it' ? 'Messaggio Bloccato' : 'Message Blocked'}</h3>
+      <p>${lang === 'fr' ? 'Ton message contient des mots inappropriés. Il ne peut pas être envoyé. Le message a été supprimé.' : lang === 'ar' ? 'رسالتك تحتوي على كلمات غير لائقة. لا يمكن إرسالها. تم حذف الرسالة.' : lang === 'it' ? 'Il tuo messaggio contiene parole inappropriate. Non può essere inviato. Il messaggio è stato cancellato.' : 'Your message contains inappropriate words. It cannot be sent. The message has been deleted.'}</p>
+      <button class="btn-ok">OK</button>
+    </div>
+  `
+  
+  document.body.appendChild(modal)
+  
+  modal.querySelector('.btn-ok').addEventListener('click', () => {
+    modal.remove()
+    if (onDismiss) onDismiss()
+  })
 }
 
 async function analyzeWithAPI(text, element) {
@@ -994,6 +1287,18 @@ function scanPageContent() {
     '.tweet-text',
     // Instagram
     '._aacl._aaco._aacu._aacx._aad7._aade',
+    // YouTube
+    '#content-text',
+    'ytd-comment-renderer #content-text',
+    '.comment-renderer-text-content',
+    // Reddit
+    '.md p',
+    '[data-testid="comment"]',
+    '.RichTextJSON-root',
+    // TikTok
+    '.tiktok-1ejylhp-DivComment',
+    // LinkedIn
+    '.feed-shared-update-v2__description',
     // General
     '.post-content',
     '.comment-text',
@@ -1009,7 +1314,7 @@ function scanPageContent() {
       
       const { foundWords, detectedLang } = findHateWords(text)
       if (foundWords.length > 0) {
-        blurContent(el, detectedLang)
+        blurContent(el, detectedLang, foundWords)
       }
     })
   })
@@ -1033,7 +1338,7 @@ function observeDOM() {
           if (text.length > 10) {
             const { foundWords, detectedLang } = findHateWords(text)
             if (foundWords.length > 0 && !node.classList.contains('safeguard-processed')) {
-              blurContent(node, detectedLang)
+              blurContent(node, detectedLang, foundWords)
             }
           }
         }

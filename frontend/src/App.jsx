@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import './App.css'
 
-const API_URL = 'http://localhost:5000/api'
+// const API_URL = 'http://localhost:5001/api'  // Local development
+const API_URL = 'https://hate-speech-api-i67cxdalvq-uc.a.run.app/api'  // Production API
 
 // Translations for all supported languages
 const translations = {

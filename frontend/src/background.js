@@ -3,7 +3,8 @@
  * Handles messages between content scripts and popup
  */
 
-const DEFAULT_API_URL = 'http://localhost:5000/api'
+// const DEFAULT_API_URL = 'http://localhost:5000/api'  // Local development
+const DEFAULT_API_URL = 'https://hate-speech-api-i67cxdalvq-uc.a.run.app/api'  // Production API
 
 chrome.runtime.onInstalled.addListener(() => {
   console.log('💜 HeartShield AI Extension installed')
