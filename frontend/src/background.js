@@ -1,34 +1,62 @@
 /**
- * Background service worker for the extension
+ * Background service worker for SafeGuard AI extension
  * Handles messages between content scripts and popup
  */
 
+const DEFAULT_API_URL = 'http://localhost:5000/api'
+
 chrome.runtime.onInstalled.addListener(() => {
-  console.log('Anti-Hate Speech Extension installed')
+  console.log('🛡️ SafeGuard AI Extension installed')
   
   // Set default settings
   chrome.storage.sync.set({ 
     isActive: false,
-    apiUrl: 'http://localhost:5000/api'
+    apiUrl: DEFAULT_API_URL,
+    stats: { analyzed: 0, blocked: 0 }
   })
 })
 
 // Listen for messages from content scripts and popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'analyzeText') {
-    // Forward analysis request to API
     analyzeText(request.text)
-      .then(result => sendResponse({ success: true, result }))
-      .catch(error => sendResponse({ success: false, error: error.message }))
+      .then(result => {
+        // Update stats
+        chrome.storage.sync.get(['stats'], (data) => {
+          const stats = data.stats || { analyzed: 0, blocked: 0 }
+          stats.analyzed++
+          if (result.toxicity?.is_toxic) stats.blocked++
+          chrome.storage.sync.set({ stats })
+        })
+        
+        sendResponse({ success: true, result })
+      })
+      .catch(error => {
+        console.error('Analysis error:', error)
+        sendResponse({ success: false, error: error.message })
+      })
     
     return true // Keep channel open for async response
+  }
+  
+  if (request.action === 'openPopup') {
+    // Can't programmatically open popup, but we can show notification
+    chrome.action.openPopup?.() // Only works in some contexts
+  }
+  
+  if (request.action === 'getStats') {
+    chrome.storage.sync.get(['stats'], (data) => {
+      sendResponse({ stats: data.stats || { analyzed: 0, blocked: 0 } })
+    })
+    return true
   }
 })
 
 async function analyzeText(text) {
   const { apiUrl } = await chrome.storage.sync.get(['apiUrl'])
+  const url = apiUrl || DEFAULT_API_URL
   
-  const response = await fetch(`${apiUrl}/analyze`, {
+  const response = await fetch(`${url}/analyze`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -42,3 +70,18 @@ async function analyzeText(text) {
   
   return await response.json()
 }
+
+// Update badge when extension is active/inactive
+chrome.storage.onChanged.addListener((changes, namespace) => {
+  if (namespace === 'sync' && changes.isActive) {
+    const isActive = changes.isActive.newValue
+    
+    // Update badge
+    chrome.action.setBadgeText({ 
+      text: isActive ? 'ON' : '' 
+    })
+    chrome.action.setBadgeBackgroundColor({ 
+      color: isActive ? '#10b981' : '#ef4444' 
+    })
+  }
+})

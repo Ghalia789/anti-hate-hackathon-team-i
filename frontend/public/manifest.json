@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Anti-Hate Speech Detector",
+  "name": "SafeGuard AI - Anti-Hate Speech",
   "version": "1.0.0",
-  "description": "Real-time detection of hate speech with multilingual sentiment and toxicity analysis",
+  "description": "Real-time AI-powered hate speech detection with multilingual sentiment and toxicity analysis. Protect yourself from harmful content.",
   "permissions": [
     "activeTab",
     "storage"
@@ -13,16 +13,12 @@
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
-    }
+    "default_title": "SafeGuard AI"
   },
   "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+    "16": "icons/icon.svg",
+    "48": "icons/icon.svg",
+    "128": "icons/icon.svg"
   },
   "background": {
     "service_worker": "background.js"

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SafeGuard AI - Anti-Hate Speech Detector</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        margin: 0;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+      #root {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      // Mock chrome API for development
+      if (typeof chrome === 'undefined' || !chrome.storage) {
+        window.chrome = {
+          storage: {
+            sync: {
+              get: (keys, callback) => {
+                const data = {};
+                if (Array.isArray(keys)) {
+                  keys.forEach(key => {
+                    data[key] = JSON.parse(localStorage.getItem(key) || 'null');
+                  });
+                } else if (typeof keys === 'object') {
+                  Object.keys(keys).forEach(key => {
+                    data[key] = JSON.parse(localStorage.getItem(key) || 'null') || keys[key];
+                  });
+                }
+                callback(data);
+              },
+              set: (items) => {
+                Object.entries(items).forEach(([key, value]) => {
+                  localStorage.setItem(key, JSON.stringify(value));
+                });
+              }
+            }
+          },
+          tabs: {
+            query: (opts, callback) => callback([{ id: 1 }]),
+            sendMessage: () => Promise.resolve()
+          },
+          runtime: {
+            onMessage: { addListener: () => {} },
+            sendMessage: (msg, callback) => {
+              if (callback) callback({ success: false });
+            }
+          },
+          action: {
+            setBadgeText: () => {},
+            setBadgeBackgroundColor: () => {}
+          }
+        };
+      }
+    </script>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
