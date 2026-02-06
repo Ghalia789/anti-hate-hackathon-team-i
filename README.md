@@ -14,18 +14,14 @@ Extension navigateur avec API REST pour la détection en temps réel de hate spe
 ## Fonctionnalités
 
 - **Analyse de sentiment multilingue** avec `cardiffnlp/twitter-xlm-roberta-base-sentiment-multilingual`
-- **Détection de toxicité avancée** avec système à 2 modèles :
-  - `unitary/multilingual-toxic-xlm-roberta` - Toxicité multilingue (toujours actif)
-  - `Hate-speech-CNERG/dehatebert-mono-arabic` - Spécialisé arabe (chargement à la demande)
-- **Chargement intelligent** : Le modèle arabe se charge automatiquement uniquement pour le texte arabe
+- **Détection de toxicité avancée** avec `unitary/multilingual-toxic-xlm-roberta`
 - **Détection automatique de la langue** avec support pour français, anglais, arabe, italien
 - **Reconnaissance des dialectes arabes** : tunisien, marocain, jordanien
-- **Scoring combiné intelligent** : pondération optimale toxicité (60%) + arabe (40% si utilisé)
-- **Seuils adaptatifs** : 45% pour arabe/français/italien, 50% pour autres langues
+- **Seuils adaptatifs** : 35% italien, 40% arabe/français, 45% autres langues
 - **Détection en temps réel** dans le navigateur pendant la saisie
 - **Extension navigateur** compatible Chrome, Firefox, Brave
-- **API REST Flask** avec modèles chargés intelligemment
-- **Temps de réponse optimal** : ~600ms pour français/anglais/italien, ~900ms pour arabe
+- **API REST Flask** avec chargement des modèles au démarrage
+- **Temps de réponse optimal** : ~600-900ms selon la langue et la machine
 - **Dockerisation** complète pour déploiement facile
 - **Compatible GCP Compute Engine**
 
@@ -73,9 +69,10 @@ pip install -r requirements.txt
 python app.py
 ```
 
-L'API sera disponible sur `http://localhost:5000`
+L'API sera disponible sur `http://localhost:8080` (ou le port défini via `PORT`).
+Avec `docker-compose`, l'API est exposée sur `http://localhost:5000` par défaut.
 
-**Note importante** : Au premier démarrage, les modèles ML de base seront téléchargés automatiquement (~2.5GB). Le modèle arabe (~800MB) se téléchargera automatiquement lors de la première détection de texte arabe.
+**Note importante** : Au premier démarrage, les modèles ML de base seront téléchargés automatiquement (~2-3GB) et mis en cache localement.
 
 ### Frontend (Extension)
 
@@ -111,12 +108,14 @@ npm run build
 docker-compose up -d
 ```
 
+Par défaut, `docker-compose` expose l'API sur `http://localhost:5000`.
+
 ### Build manuel
 
 ```bash
 cd backend
 docker build -t anti-hate-api:latest .
-docker run -p 5000:5000 anti-hate-api:latest
+docker run -p 8080:8080 anti-hate-api:latest
 ```
 
 ## API Endpoints
@@ -149,11 +148,6 @@ Content-Type: application/json
 **Response:**
 ```json
 {
-  "language": {
-    "detected": "ar",
-    "dialect": "Tunisian",
-    "supported": true
-  },
   "sentiment": {
     "label": "negative",
     "score": 0.85
@@ -173,10 +167,17 @@ Content-Type: application/json
   },
   "models_used": {
     "sentiment": "cardiffnlp/twitter-xlm-roberta-base-sentiment-multilingual",
-    "toxicity": "unitary/multilingual-toxic-xlm-roberta",
-    "arabic_hate": "Hate-speech-CNERG/dehatebert-mono-arabic",
-    "hate_speech": "facebook/roberta-hate-speech-dynabench-r4-target"
+    "toxicity": "unitary/multilingual-toxic-xlm-roberta"
   },
+  "language": "ar",
+  "dialect": "Tunisian",
+  "language_info": {
+    "detected": "ar",
+    "dialect": "Tunisian",
+    "supported": true
+  },
+  "is_hate_speech": true,
+  "hate_speech_score": 78,
   "text_length": 45,
   "timestamp": "2026-02-06T12:00:00"
 }
@@ -197,14 +198,14 @@ Content-Type: application/json
 ### Backend (.env)
 ```env
 FLASK_ENV=production
-PORT=5000
+PORT=8080
 CORS_ORIGINS=http://localhost:3000,chrome-extension://*
 ```
 
 ### Frontend
 Modifier `API_URL` dans `src/App.jsx` pour pointer vers votre backend :
 ```javascript
-const API_URL = 'http://your-backend-url:5000/api'
+const API_URL = 'http://your-backend-url:8080/api'
 ```
 
 ## Déploiement GCP
@@ -247,25 +248,16 @@ gcloud compute firewall-rules create allow-http-5000 \
 - **Langues** : 100+ langues supportées
 - **Chargement** : Au démarrage
 
-### Toxicity & Hate Speech Detection (Système Optimisé)
+### Toxicity Detection
 
-Le système utilise **2 modèles spécialisés** avec chargement intelligent pour une détection optimale :
+Le système utilise **1 modèle de toxicité multilingue** pour toutes les langues :
 
-#### 1. Toxicity Multilingue (Toujours Actif)
 - **Modèle** : `unitary/multilingual-toxic-xlm-roberta`
 - **Type** : Classification multi-labels
 - **Sorties** : toxic, severe_toxic, obscene, threat, insult, identity_hate
-- **Langues** : Multilingue (excellent pour français, anglais, italien)
-- **Poids dans scoring** : 60%
+- **Langues** : Multilingue (français, anglais, italien, arabe)
 - **Chargement** : Au démarrage (~2GB)
-
-#### 2. Hate Speech Arabe (Chargement à la Demande)
-- **Modèle** : `Hate-speech-CNERG/dehatebert-mono-arabic`
-- **Type** : Classification binaire (hate speech / not hate speech)
-- **Spécialisation** : Contenu arabe incluant dialectes
-- **Poids dans scoring** : 40% (uniquement pour textes arabes)
-- **Chargement** : Automatique lors de la première détection de texte arabe (~800MB)
-- **Dialectes supportés** :
+- **Dialectes supportés (détection)** :
   - Tunisien : برشا, ياسر, كان, زادة, حاجة
   - Marocain : بزاف, واخا, غير, بغيت, كيف
   - Jordanien : كتير, شو, هيك, منيح, ليش
@@ -274,27 +266,21 @@ Le système utilise **2 modèles spécialisés** avec chargement intelligent pou
 - **Bibliothèque** : `langdetect`
 - **Support** : Français, Anglais, Arabe, Italien, et autres
 - **Fonctionnalité** : Reconnaissance automatique des dialectes arabes via patterns regex
-- **Optimisation** : Déclenche le chargement du modèle arabe uniquement si nécessaire
+- **Optimisation** : Détection rapide pour prioriser l'analyse multilingue
 
-### Système de Scoring Combiné
-Le score final de toxicité est calculé intelligemment :
-- **Pour textes non-arabes** : Toxicity model (100%)
-- **Pour textes arabes** : Toxicity model (60%) + Arabic hate model (40%)
-- **Seuils adaptatifs** selon la langue :
-  - Arabe, Français, Italien : **45%** (plus sensible)
-  - Autres langues : **50%** (standard)
+### Seuils Adaptatifs
+Le score final de toxicité est basé sur le modèle multilingue avec seuils adaptatifs :
+- Italien : **35%**
+- Arabe, Français : **40%**
+- Autres langues : **45%**
 
-**Optimisation** : Les modèles de base sont chargés **UNE SEULE FOIS** au démarrage. Le modèle arabe se charge automatiquement à la première détection de texte arabe et reste en mémoire pour les requêtes suivantes.
+**Optimisation** : Les modèles sont chargés **UNE SEULE FOIS** au démarrage et restent en mémoire.
 
 ## Performance
 
-- **Démarrage initial** : ~30-45 secondes (chargement des 2 modèles de base, ~2.5GB)
-- **Premier texte arabe** : +15-20 secondes (chargement modèle arabe, ~800MB)
-- **Temps d'analyse par texte** :
-  - Français/Anglais/Italien : **~600-900ms**
-  - Arabe (après premier chargement) : **~800ms-1.2s**
-- **Mémoire** : ~4-5GB RAM (base) / ~6-7GB RAM (avec modèle arabe chargé)
-- **Temps d'analyse** : ~100-500ms par texte
+- **Démarrage initial** : ~30-45 secondes (chargement des 2 modèles, ~2-3GB)
+- **Temps d'analyse par texte** : **~600-900ms**
+- **Mémoire** : ~4-5GB RAM (modèles en mémoire)
 - **Mémoire requise** : ~2-4GB RAM
 - **GPU support** : Automatique si disponible
 
@@ -327,4 +313,4 @@ Anti-Hate Hackathon - Team I
 
 ---
 
-**Note** : Ce projet utilise des modèles de Machine Learning qui nécessitent une connexion internet pour le premier téléchargement. Assurez-vous d'avoir suffisamment d'espace disque (~3.5GB) pour tous les modèles.
+**Note** : Ce projet utilise des modèles de Machine Learning qui nécessitent une connexion internet pour le premier téléchargement. Assurez-vous d'avoir suffisamment d'espace disque (~2-3GB) pour le cache des modèles.
