@@ -1,12 +1,12 @@
 /**
- * Background service worker for SafeGuard AI extension
+ * Background service worker for HeartShield AI extension
  * Handles messages between content scripts and popup
  */
 
 const DEFAULT_API_URL = 'http://localhost:5000/api'
 
 chrome.runtime.onInstalled.addListener(() => {
-  console.log('🛡️ SafeGuard AI Extension installed')
+  console.log('💜 HeartShield AI Extension installed')
   
   // Set default settings
   chrome.storage.sync.set({ 

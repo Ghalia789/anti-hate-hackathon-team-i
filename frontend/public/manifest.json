@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "SafeGuard AI - Anti-Hate Speech",
+  "name": "HeartShield AI - Anti-Hate Speech",
   "version": "1.0.0",
   "description": "Real-time AI-powered hate speech detection with multilingual sentiment and toxicity analysis. Protect yourself from harmful content.",
   "permissions": [
@@ -13,12 +13,19 @@
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "SafeGuard AI"
+    "default_title": "HeartShield AI",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
   },
   "icons": {
-    "16": "icons/icon.svg",
-    "48": "icons/icon.svg",
-    "128": "icons/icon.svg"
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png",
+    "256": "icons/icon-256.png"
   },
   "background": {
     "service_worker": "background.js"

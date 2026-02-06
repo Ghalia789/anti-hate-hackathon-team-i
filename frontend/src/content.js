@@ -1,5 +1,5 @@
 /**
- * SafeGuard AI - Advanced Content Protection
+ * HeartShield AI - Advanced Content Protection
  * Real-time hate speech detection with multilingual support
  * Features: Word highlighting, content blur, child mode, multi-language alerts
  */
@@ -53,21 +53,21 @@ const WARNING_MESSAGES = {
 
 // Inject styles
 const injectStyles = () => {
-  if (document.getElementById('safeguard-styles')) return
+  if (document.getElementById('heartshield-styles')) return
   
   const style = document.createElement('style')
-  style.id = 'safeguard-styles'
+  style.id = 'heartshield-styles'
   style.textContent = `
-    /* Floating Action Button */
-    #safeguard-fab {
+    /* Floating Action Button - HeartShield Edition */
+    #heartshield-fab {
       position: fixed;
       bottom: 24px;
       right: 24px;
       width: 56px;
       height: 56px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+      background: linear-gradient(135deg, #00d4ff 0%, #5b7fff 50%, #a855f7 100%);
+      box-shadow: 0 4px 20px rgba(91, 127, 255, 0.4);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -81,40 +81,40 @@ const injectStyles = () => {
       pointer-events: none;
     }
     
-    #safeguard-fab.visible {
+    #heartshield-fab.visible {
       opacity: 1;
       transform: scale(1);
       pointer-events: auto;
     }
     
-    #safeguard-fab:hover {
+    #heartshield-fab:hover {
       transform: scale(1.1);
-      box-shadow: 0 6px 28px rgba(99, 102, 241, 0.5);
+      box-shadow: 0 6px 28px rgba(91, 127, 255, 0.6), 0 0 30px rgba(168, 85, 247, 0.3);
     }
     
-    #safeguard-fab.active {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+    #heartshield-fab.active {
+      background: linear-gradient(135deg, #00d4ff 0%, #5b7fff 50%, #a855f7 100%);
+      box-shadow: 0 4px 20px rgba(0, 212, 255, 0.5);
     }
     
-    #safeguard-fab.child-mode {
+    #heartshield-fab.child-mode {
       background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
       box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
     }
     
-    #safeguard-fab.analyzing {
+    #heartshield-fab.analyzing {
       animation: fabPulse 1.5s ease-in-out infinite;
     }
     
-    #safeguard-fab.toxic {
+    #heartshield-fab.toxic {
       background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
       box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
       animation: fabShake 0.5s ease;
     }
     
     @keyframes fabPulse {
-      0%, 100% { box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4); }
-      50% { box-shadow: 0 4px 35px rgba(99, 102, 241, 0.7); }
+      0%, 100% { box-shadow: 0 4px 20px rgba(91, 127, 255, 0.4); }
+      50% { box-shadow: 0 4px 35px rgba(91, 127, 255, 0.7), 0 0 40px rgba(168, 85, 247, 0.5); }
     }
     
     @keyframes fabShake {
@@ -125,14 +125,13 @@ const injectStyles = () => {
       80% { transform: translateX(4px); }
     }
     
-    #safeguard-fab svg {
-      width: 28px;
-      height: 28px;
-      color: white;
+    #heartshield-fab svg {
+      width: 32px;
+      height: 32px;
       transition: transform 0.3s ease;
     }
     
-    #safeguard-fab.analyzing svg {
+    #heartshield-fab.analyzing svg {
       animation: fabSpin 1s linear infinite;
     }
     
@@ -142,7 +141,7 @@ const injectStyles = () => {
     }
     
     /* Status Ring */
-    #safeguard-fab .status-ring {
+    #heartshield-fab .status-ring {
       position: absolute;
       inset: -4px;
       border-radius: 50%;
@@ -151,7 +150,7 @@ const injectStyles = () => {
       opacity: 0;
     }
     
-    #safeguard-fab.analyzing .status-ring {
+    #heartshield-fab.analyzing .status-ring {
       opacity: 0.6;
       animation: ringRotate 1s linear infinite;
     }
@@ -162,7 +161,7 @@ const injectStyles = () => {
     }
     
     /* Tooltip */
-    #safeguard-fab .fab-tooltip {
+    #heartshield-fab .fab-tooltip {
       position: absolute;
       right: 70px;
       background: rgba(17, 24, 39, 0.95);
@@ -180,7 +179,7 @@ const injectStyles = () => {
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
     
-    #safeguard-fab .fab-tooltip::after {
+    #heartshield-fab .fab-tooltip::after {
       content: '';
       position: absolute;
       right: -6px;
@@ -191,7 +190,7 @@ const injectStyles = () => {
       border-color: transparent transparent transparent rgba(17, 24, 39, 0.95);
     }
     
-    #safeguard-fab:hover .fab-tooltip {
+    #heartshield-fab:hover .fab-tooltip {
       opacity: 1;
       transform: translateX(0);
     }
@@ -352,14 +351,15 @@ const injectStyles = () => {
     }
     
     .safeguard-send-alert-box {
-      background: white !important;
+      background: linear-gradient(135deg, #12122a 0%, #0a0a1a 100%) !important;
       border-radius: 16px !important;
       padding: 24px !important;
       max-width: 400px !important;
       width: 90% !important;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3) !important;
+      box-shadow: 0 25px 50px rgba(233, 30, 140, 0.2), 0 0 60px rgba(0, 0, 0, 0.5) !important;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
       animation: slideUp 0.3s ease !important;
+      border: 1px solid rgba(233, 30, 140, 0.3) !important;
     }
     
     @keyframes slideUp {
@@ -377,31 +377,31 @@ const injectStyles = () => {
     .safeguard-send-alert-icon {
       width: 48px !important;
       height: 48px !important;
-      background: linear-gradient(135deg, #fef2f2, #fee2e2) !important;
+      background: linear-gradient(135deg, rgba(233, 30, 140, 0.2), rgba(255, 51, 102, 0.1)) !important;
       border-radius: 12px !important;
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-      color: #ef4444 !important;
+      color: #e91e8c !important;
     }
     
     .safeguard-send-alert-title {
       font-size: 18px !important;
       font-weight: 700 !important;
-      color: #1f2937 !important;
+      color: #ffffff !important;
       margin: 0 !important;
     }
     
     .safeguard-send-alert-text {
       font-size: 14px !important;
-      color: #6b7280 !important;
+      color: #9999bb !important;
       line-height: 1.6 !important;
       margin: 0 0 20px 0 !important;
     }
     
     .safeguard-send-alert-words {
-      background: #fef2f2 !important;
-      border: 1px solid #fecaca !important;
+      background: rgba(233, 30, 140, 0.1) !important;
+      border: 1px solid rgba(233, 30, 140, 0.3) !important;
       border-radius: 8px !important;
       padding: 12px !important;
       margin-bottom: 20px !important;
@@ -410,7 +410,7 @@ const injectStyles = () => {
     .safeguard-send-alert-words-title {
       font-size: 12px !important;
       font-weight: 600 !important;
-      color: #ef4444 !important;
+      color: #e91e8c !important;
       margin-bottom: 8px !important;
     }
     
@@ -421,7 +421,7 @@ const injectStyles = () => {
     }
     
     .safeguard-flagged-word {
-      background: #ef4444 !important;
+      background: linear-gradient(135deg, #e91e8c, #c41874) !important;
       color: white !important;
       padding: 4px 10px !important;
       border-radius: 6px !important;
@@ -437,24 +437,24 @@ const injectStyles = () => {
     .safeguard-btn-cancel {
       flex: 1 !important;
       padding: 12px !important;
-      background: #f3f4f6 !important;
-      border: none !important;
+      background: rgba(255, 255, 255, 0.1) !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
       border-radius: 10px !important;
       font-size: 14px !important;
       font-weight: 600 !important;
-      color: #374151 !important;
+      color: #fff !important;
       cursor: pointer !important;
       transition: all 0.2s ease !important;
     }
     
     .safeguard-btn-cancel:hover {
-      background: #e5e7eb !important;
+      background: rgba(255, 255, 255, 0.2) !important;
     }
     
     .safeguard-btn-send {
       flex: 1 !important;
       padding: 12px !important;
-      background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+      background: linear-gradient(135deg, #e91e8c, #c41874) !important;
       border: none !important;
       border-radius: 10px !important;
       font-size: 14px !important;
@@ -466,7 +466,7 @@ const injectStyles = () => {
     
     .safeguard-btn-send:hover {
       transform: translateY(-1px) !important;
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4) !important;
+      box-shadow: 0 4px 20px rgba(233, 30, 140, 0.5) !important;
     }
     
     /* Toast notification */
@@ -475,14 +475,15 @@ const injectStyles = () => {
       bottom: 100px !important;
       right: 24px !important;
       max-width: 340px !important;
-      background: white !important;
+      background: linear-gradient(135deg, #12122a 0%, #0a0a1a 100%) !important;
       border-radius: 16px !important;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
+      box-shadow: 0 10px 40px rgba(233, 30, 140, 0.2), 0 4px 20px rgba(0, 0, 0, 0.4) !important;
       z-index: 2147483645 !important;
       overflow: hidden !important;
       transform: translateX(120%) !important;
       transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
     
     .safeguard-toast.visible {
@@ -490,11 +491,11 @@ const injectStyles = () => {
     }
     
     .safeguard-toast.toxic {
-      border-left: 4px solid #ef4444 !important;
+      border-left: 4px solid #e91e8c !important;
     }
     
     .safeguard-toast.safe {
-      border-left: 4px solid #10b981 !important;
+      border-left: 4px solid #00d4ff !important;
     }
     
     .safeguard-toast-header {
@@ -515,13 +516,13 @@ const injectStyles = () => {
     }
     
     .safeguard-toast.toxic .safeguard-toast-icon {
-      background: linear-gradient(135deg, #fef2f2, #fee2e2) !important;
-      color: #ef4444 !important;
+      background: linear-gradient(135deg, rgba(233, 30, 140, 0.2), rgba(196, 24, 116, 0.1)) !important;
+      color: #e91e8c !important;
     }
     
     .safeguard-toast.safe .safeguard-toast-icon {
-      background: linear-gradient(135deg, #f0fdf4, #dcfce7) !important;
-      color: #10b981 !important;
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 168, 204, 0.1)) !important;
+      color: #00d4ff !important;
     }
     
     .safeguard-toast-icon svg {
@@ -539,12 +540,12 @@ const injectStyles = () => {
       margin-bottom: 2px !important;
     }
     
-    .safeguard-toast.toxic .safeguard-toast-title { color: #ef4444 !important; }
-    .safeguard-toast.safe .safeguard-toast-title { color: #10b981 !important; }
+    .safeguard-toast.toxic .safeguard-toast-title { color: #e91e8c !important; }
+    .safeguard-toast.safe .safeguard-toast-title { color: #00d4ff !important; }
     
     .safeguard-toast-desc {
       font-size: 13px !important;
-      color: #6b7280 !important;
+      color: #9999bb !important;
     }
     
     .safeguard-toast-close {
@@ -554,30 +555,30 @@ const injectStyles = () => {
       width: 28px !important;
       height: 28px !important;
       border: none !important;
-      background: #f3f4f6 !important;
+      background: rgba(255, 255, 255, 0.1) !important;
       border-radius: 8px !important;
       cursor: pointer !important;
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-      color: #9ca3af !important;
+      color: #9999bb !important;
       transition: all 0.2s ease !important;
     }
     
     .safeguard-toast-close:hover {
-      background: #e5e7eb !important;
-      color: #6b7280 !important;
+      background: rgba(255, 255, 255, 0.2) !important;
+      color: #fff !important;
     }
     
     /* Input highlight borders */
     .safeguard-input-warning {
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3) !important;
-      border-color: #ef4444 !important;
+      box-shadow: 0 0 0 3px rgba(233, 30, 140, 0.4) !important;
+      border-color: #e91e8c !important;
     }
     
     .safeguard-input-safe {
-      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3) !important;
-      border-color: #10b981 !important;
+      box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.4) !important;
+      border-color: #00d4ff !important;
     }
   `
   document.head.appendChild(style)
@@ -631,16 +632,24 @@ const findHateWords = (text) => {
 
 // Create FAB element
 const createFAB = () => {
-  if (document.getElementById('safeguard-fab')) return
+  if (document.getElementById('heartshield-fab')) return
   
   fabElement = document.createElement('div')
-  fabElement.id = 'safeguard-fab'
+  fabElement.id = 'heartshield-fab'
   fabElement.innerHTML = `
     <div class="status-ring"></div>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    <svg viewBox="0 0 24 24" fill="none">
+      <defs>
+        <linearGradient id="fabShieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#00d4ff"/>
+          <stop offset="50%" stop-color="#5b7fff"/>
+          <stop offset="100%" stop-color="#a855f7"/>
+        </linearGradient>
+      </defs>
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="url(#fabShieldGrad)" opacity="0.9"/>
+      <path d="M12 8c-1.2-1.2-3-1.2-3 1.2 0 1.5 3 3.3 3 3.3s3-1.8 3-3.3c0-2.4-1.8-2.4-3-1.2z" fill="white" opacity="0.95"/>
     </svg>
-    <div class="fab-tooltip">SafeGuard AI - Protection Active</div>
+    <div class="fab-tooltip">HeartShield AI - Protection Active</div>
   `
   
   document.body.appendChild(fabElement)
