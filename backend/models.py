@@ -7,6 +7,8 @@ import torch
 import logging
 from langdetect import detect, DetectorFactory
 import re
+from functools import lru_cache
+import hashlib
 
 # Set seed for consistent language detection
 DetectorFactory.seed = 0
@@ -165,6 +167,12 @@ def analyze_toxicity(text, detected_lang):
         'threshold': threshold,
         'scores': {k: float(v) for k, v in toxicity_scores.items()}
     }
+
+
+@lru_cache(maxsize=500)
+def _cache_key(text: str) -> str:
+    """Generate cache key for text (used by lru_cache)"""
+    return hashlib.md5(text.encode('utf-8')).hexdigest()
 
 
 def calculate_combined_score(toxicity_scores):
