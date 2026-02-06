@@ -4,11 +4,12 @@ Real-time hate speech detection with multilingual sentiment and toxicity analysi
 """
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
-import torch
 import os
 from datetime import datetime
 import logging
+
+# Import ML models module
+import models
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -25,53 +26,10 @@ CORS(app, resources={
     }
 })
 
-# Global variables for models - loaded once at startup
-sentiment_model = None
-toxicity_model = None
-device = None
-
-def load_models():
-    """
-    Load models once at startup
-    Best practice: Models are loaded only once and reused for all requests
-    """
-    global sentiment_model, toxicity_model, device
-    
-    logger.info("Starting model loading...")
-    
-    # Determine device (GPU if available, else CPU)
-    device = 0 if torch.cuda.is_available() else -1
-    device_name = "GPU" if device == 0 else "CPU"
-    logger.info(f"Using device: {device_name}")
-    
-    try:
-        # Load sentiment analysis model
-        logger.info("Loading sentiment model: cardiffnlp/twitter-xlm-roberta-base-sentiment-multilingual")
-        sentiment_model = pipeline(
-            "sentiment-analysis",
-            model="cardiffnlp/twitter-xlm-roberta-base-sentiment-multilingual",
-            device=device
-        )
-        logger.info("Sentiment model loaded successfully")
-        
-        # Load toxicity detection model
-        logger.info("Loading toxicity model: unitary/multilingual-toxic-xlm-roberta")
-        toxicity_model = pipeline(
-            "text-classification",
-            model="unitary/multilingual-toxic-xlm-roberta",
-            device=device,
-            top_k=None  # Return all labels with scores
-        )
-        logger.info("Toxicity model loaded successfully")
-        
-        logger.info("All models loaded successfully!")
-        
-    except Exception as e:
-        logger.error(f"Error loading models: {str(e)}")
-        raise
-
-# Load models at startup
-load_models()
+# Load ML models at startup
+logger.info("Initializing ML models...")
+models.load_core_models()
+logger.info("API ready!")
 
 
 @app.route('/api/health', methods=['GET'])
@@ -80,8 +38,8 @@ def health_check():
     return jsonify({
         'status': 'healthy',
         'timestamp': datetime.utcnow().isoformat(),
-        'models_loaded': sentiment_model is not None and toxicity_model is not None,
-        'device': 'GPU' if device == 0 else 'CPU'
+        'models_loaded': models.are_models_loaded(),
+        'device': models.get_device_info()
     }), 200
 
 
@@ -111,28 +69,25 @@ def analyze_text():
                 'error': 'Text too long (max 5000 characters)'
             }), 400
         
-        # Analyze sentiment
-        logger.info(f"Analyzing text (length: {len(text)})")
-        sentiment_result = sentiment_model(text[:512])[0]  # Truncate to model max length
+        # Detect language using models module
+        detected_lang, dialect = models.detect_language(text)
+        logger.info(f"Analyzing text (length: {len(text)}, language: {detected_lang}, dialect: {dialect})")
         
-        # Analyze toxicity
-        toxicity_results = toxicity_model(text[:512])[0]
+        # Analyze sentiment using models module
+        sentiment_result = models.analyze_sentiment(text)
         
-        # Process toxicity results (get top toxic labels)
-        toxicity_scores = {item['label']: item['score'] for item in toxicity_results}
-        
-        # Determine if text is toxic (threshold: 0.5)
-        is_toxic = any(score > 0.5 for label, score in toxicity_scores.items() if label != 'neutral')
+        # Analyze toxicity using models module
+        toxicity_result = models.analyze_toxicity(text, detected_lang)
         
         return jsonify({
-            'sentiment': {
-                'label': sentiment_result['label'],
-                'score': float(sentiment_result['score'])
+            'sentiment': sentiment_result,
+            'toxicity': toxicity_result,
+            'language': {
+                'detected': detected_lang,
+                'dialect': dialect,
+                'supported': detected_lang in models.SUPPORTED_LANGUAGES
             },
-            'toxicity': {
-                'is_toxic': is_toxic,
-                'scores': {k: float(v) for k, v in toxicity_scores.items()}
-            },
+            'models_used': models.get_models_info(toxicity_result.get('arabic_model_used', False)),
             'text_length': len(text),
             'timestamp': datetime.utcnow().isoformat()
         }), 200
@@ -188,24 +143,25 @@ def batch_analyze():
                 continue
             
             try:
-                # Analyze sentiment
-                sentiment_result = sentiment_model(text[:512])[0]
+                # Detect language using models module
+                detected_lang, dialect = models.detect_language(text)
                 
-                # Analyze toxicity
-                toxicity_results = toxicity_model(text[:512])[0]
-                toxicity_scores = {item['label']: item['score'] for item in toxicity_results}
-                is_toxic = any(score > 0.5 for label, score in toxicity_scores.items() if label != 'neutral')
+                # Analyze sentiment using models module
+                sentiment_result = models.analyze_sentiment(text)
+                
+                # Analyze toxicity using models module
+                toxicity_result = models.analyze_toxicity(text, detected_lang)
                 
                 results.append({
                     'index': idx,
-                    'sentiment': {
-                        'label': sentiment_result['label'],
-                        'score': float(sentiment_result['score'])
-                    },
+                    'sentiment': sentiment_result,
                     'toxicity': {
-                        'is_toxic': is_toxic,
-                        'scores': {k: float(v) for k, v in toxicity_scores.items()}
+                        'is_toxic': toxicity_result['is_toxic'],
+                        'confidence': toxicity_result['confidence'],
+                        'scores': toxicity_result['scores']
                     },
+                    'language': detected_lang,
+                    'dialect': dialect,
                     'text_length': len(text)
                 })
             except Exception as e:

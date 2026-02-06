@@ -6,3 +6,5 @@ sentencepiece==0.1.99
 protobuf==4.25.1
 gunicorn==22.0.0
 python-dotenv==1.0.0
+langdetect==1.0.9
+requests==2.31.0

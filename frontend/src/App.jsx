@@ -111,6 +111,23 @@ function App() {
 
         {result && (
           <div className="results">
+            {/* Language Detection Card */}
+            {result.language && (
+              <div className="result-card">
+                <h3>Language Detection</h3>
+                <div className="language-info">
+                  <span className="language-label">Detected: </span>
+                  <span className="language-value">{result.language.detected.toUpperCase()}</span>
+                  {result.language.dialect && (
+                    <span className="dialect-badge">{result.language.dialect}</span>
+                  )}
+                  {!result.language.supported && (
+                    <span className="unsupported-warning">Language may not be fully supported</span>
+                  )}
+                </div>
+              </div>
+            )}
+
             <div className="result-card">
               <h3>Sentiment {getSentimentEmoji(result.sentiment.label)}</h3>
               <div className="result-value">
@@ -136,6 +153,18 @@ function App() {
                 {result.toxicity.is_toxic ? 'Toxic Content Detected' : 'Content is Safe'}
               </div>
               
+              {result.toxicity.confidence !== undefined && (
+                <div className="confidence-info">
+                  <span>Confidence: </span>
+                  <span className="confidence-value">
+                    {(result.toxicity.confidence * 100).toFixed(1)}%
+                  </span>
+                  <span className="threshold-info">
+                    (Threshold: {(result.toxicity.threshold * 100).toFixed(0)}%)
+                  </span>
+                </div>
+              )}
+              
               <div className="toxicity-scores">
                 {Object.entries(result.toxicity.scores)
                   .sort((a, b) => b[1] - a[1])
@@ -156,6 +185,19 @@ function App() {
                     </div>
                   ))}
               </div>
+              
+              {result.models_used && (
+                <div className="models-info">
+                  <details>
+                    <summary>Models Used</summary>
+                    <ul>
+                      {Object.entries(result.models_used).map(([key, value]) => 
+                        value && <li key={key}><small>{value}</small></li>
+                      )}
+                    </ul>
+                  </details>
+                </div>
+              )}
             </div>
           </div>
         )}

@@ -87,15 +87,22 @@ analyzeText('This is fantastic!')
 
 ## Response Examples
 
-### Positive Sentiment
+### Positive Content (English)
 ```json
 {
+  "language": {
+    "detected": "en",
+    "dialect": null,
+    "supported": true
+  },
   "sentiment": {
     "label": "positive",
     "score": 0.9876
   },
   "toxicity": {
     "is_toxic": false,
+    "confidence": 0.12,
+    "threshold": 0.5,
     "scores": {
       "toxic": 0.0023,
       "severe_toxic": 0.0001,
@@ -105,20 +112,32 @@ analyzeText('This is fantastic!')
       "identity_hate": 0.0003
     }
   },
+  "models_used": {
+    "sentiment": "cardiffnlp/twitter-xlm-roberta-base-sentiment-multilingual",
+    "toxicity": "unitary/multilingual-toxic-xlm-roberta",
+    "arabic_hate": null
+  },
   "text_length": 20,
   "timestamp": "2026-02-06T12:00:00.000Z"
 }
 ```
 
-### Toxic Content
+### Toxic Content with Arabic Dialect Detection
 ```json
 {
+  "language": {
+    "detected": "ar",
+    "dialect": "Tunisian",
+    "supported": true
+  },
   "sentiment": {
     "label": "negative",
     "score": 0.9534
   },
   "toxicity": {
     "is_toxic": true,
+    "confidence": 0.88,
+    "threshold": 0.45,
     "scores": {
       "toxic": 0.8756,
       "severe_toxic": 0.1234,
@@ -128,7 +147,12 @@ analyzeText('This is fantastic!')
       "identity_hate": 0.2345
     }
   },
-  "text_length": 35,
+  "models_used": {
+    "sentiment": "cardiffnlp/twitter-xlm-roberta-base-sentiment-multilingual",
+    "toxicity": "unitary/multilingual-toxic-xlm-roberta",
+    "arabic_hate": "Hate-speech-CNERG/dehatebert-mono-arabic"
+  },
+  "text_length": 45,
   "timestamp": "2026-02-06T12:00:00.000Z"
 }
 ```

@@ -37,28 +37,82 @@ docker run -p 5000:5000 anti-hate-api
 
 ## Modèles ML
 
-### Chargement au Démarrage
-Les modèles sont chargés **UNE SEULE FOIS** au démarrage:
+### Architecture Optimisée à 3 Modèles
+Le système utilise **3 modèles ML** avec chargement intelligent :
 
 ```python
 def load_models():
-    global sentiment_model, toxicity_model
+    """Charge les modèles de base au démarrage (sentiment + toxicity)"""
+    global sentiment_model, toxicity_model, device
     
-    # Sentiment multilingue
+    # 1. Sentiment multilingue
     sentiment_model = pipeline(
         "sentiment-analysis",
         model="cardiffnlp/twitter-xlm-roberta-base-sentiment-multilingual"
     )
     
-    # Toxicité multilingue
+    # 2. Toxicité multilingue
     toxicity_model = pipeline(
         "text-classification",
-        model="unitary/multilingual-toxic-xlm-roberta"
+        model="unitary/multilingual-toxic-xlm-roberta",
+        top_k=None
     )
+
+def get_arabic_hate_model():
+    """Charge le modèle arabe à la demande (lazy loading)"""
+    global arabic_hate_model
+    
+    if arabic_hate_model is None:
+        # 3. Hate speech arabe (chargement à la demande)
+        arabic_hate_model = pipeline(
+            "text-classification",
+            model="Hate-speech-CNERG/dehatebert-mono-arabic"
+        )
+    
+    return arabic_hate_model
 ```
 
+### Chargement Intelligent
+- **Au démarrage** : Modèles 1 et 2 (~2.5GB, 30-45 secondes)
+- **À la demande** : Modèle 3 se charge automatiquement lors de la première détection de texte arabe (~800MB, +15-20 secondes)
+- **Avantages** :
+  - Démarrage plus rapide pour l'API
+  - Temps de réponse optimal pour français/anglais/italien (~600-900ms)
+  - Support arabe complet avec dialectes quand nécessaire
+
+### Détection de Langue et Dialectes
+Le système détecte automatiquement la langue et les dialectes arabes :
+
+```python
+from langdetect import detect, DetectorFactory
+
+def detect_language(text):
+    # Détection de la langue
+    lang = detect(text)
+    
+    # Reconnaissance des dialectes arabes
+    if lang == 'ar':
+        if any(word in text for word in ['برشا', 'ياسر', 'كان']):
+            return lang, 'Tunisian'
+        elif any(word in text for word in ['بزاف', 'واخا', 'غير']):
+            return lang, 'Moroccan'
+        elif any(word in text for word in ['كتير', 'شو', 'هيك']):
+            return lang, 'Jordanian'
+    
+    return lang, None
+```
+
+### Scoring Combiné Optimisé
+Les résultats sont combinés intelligemment :
+- **Textes non-arabes** : Toxicity model à 100%
+- **Textes arabes** : Toxicity model (60%) + Arabic hate model (40%)
+
+### Seuils Adaptatifs
+- **Arabe, Français, Italien** : 45% (plus sensible)
+- **Autres langues** : 50% (standard)
+
 ### Premier Démarrage
-- Téléchargement des modèles: ~2GB
+- Téléchargement des 4 modèles: ~3-4GB
 - Temps de chargement: 30-60 secondes
 - Stockage en cache: `~/.cache/huggingface/`
 

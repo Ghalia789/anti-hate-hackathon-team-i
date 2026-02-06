@@ -20,6 +20,10 @@ class Config:
     # Models
     SENTIMENT_MODEL = 'cardiffnlp/twitter-xlm-roberta-base-sentiment-multilingual'
     TOXICITY_MODEL = 'unitary/multilingual-toxic-xlm-roberta'
+    ARABIC_HATE_MODEL = 'Hate-speech-CNERG/dehatebert-mono-arabic'
+    
+    # Supported languages
+    SUPPORTED_LANGUAGES = ['fr', 'en', 'ar', 'it']
     
     # Text limits
     MAX_TEXT_LENGTH = 5000

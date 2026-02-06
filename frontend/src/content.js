@@ -94,23 +94,44 @@ function displayResult(result, element) {
   
   // Only show warning if toxic content detected
   if (result.toxicity.is_toxic) {
+    // Build language info string
+    let languageInfo = ''
+    if (result.language) {
+      languageInfo = result.language.detected.toUpperCase()
+      if (result.language.dialect) {
+        languageInfo += ` (${result.language.dialect})`
+      }
+    }
+    
+    // Build confidence info string
+    let confidenceInfo = ''
+    if (result.toxicity.confidence !== undefined) {
+      confidenceInfo = ` - Confidence: ${(result.toxicity.confidence * 100).toFixed(0)}%`
+    }
+    
     const warning = document.createElement('div')
     warning.className = 'hate-speech-warning'
     warning.innerHTML = `
       <div style="
         background: linear-gradient(135deg, #ff4444, #cc0000);
         color: white;
-        padding: 8px 12px;
+        padding: 10px 12px;
         border-radius: 6px;
         margin-top: 4px;
         font-size: 13px;
         font-weight: 600;
         box-shadow: 0 2px 8px rgba(255, 68, 68, 0.3);
-        display: flex;
-        align-items: center;
-        gap: 8px;
+        line-height: 1.4;
       ">
-        <span>Warning: Potentially toxic content detected</span>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+          <span>Warning: Potentially toxic content detected</span>
+        </div>
+        ${languageInfo || confidenceInfo ? `
+          <div style="font-size: 11px; opacity: 0.9; font-weight: normal;">
+            ${languageInfo ? `Language: ${languageInfo}` : ''}
+            ${confidenceInfo}
+          </div>
+        ` : ''}
       </div>
     `
     
