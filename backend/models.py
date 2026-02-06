@@ -66,8 +66,10 @@ def load_core_models():
     """
     Load core models at startup (sentiment + toxicity)
     Arabic model is loaded on-demand for better performance
+    Includes retry logic for HuggingFace rate limits
     """
     global sentiment_model, toxicity_model, device
+    import time
     
     logger.info("Starting ML models loading...")
     
@@ -76,32 +78,45 @@ def load_core_models():
     device_name = "GPU" if device == 0 else "CPU"
     logger.info(f"Using device: {device_name}")
     
-    try:
-        # Load sentiment analysis model (multilingual)
-        logger.info("Loading sentiment model: cardiffnlp/twitter-xlm-roberta-base-sentiment-multilingual")
-        sentiment_model = pipeline(
-            "sentiment-analysis",
-            model="cardiffnlp/twitter-xlm-roberta-base-sentiment-multilingual",
-            device=device
-        )
-        logger.info("✓ Sentiment model loaded successfully")
-        
-        # Load multilingual toxicity detection model
-        logger.info("Loading toxicity model: unitary/multilingual-toxic-xlm-roberta")
-        toxicity_model = pipeline(
-            "text-classification",
-            model="unitary/multilingual-toxic-xlm-roberta",
-            device=device,
-            top_k=None  # Return all labels with scores
-        )
-        logger.info("✓ Toxicity model loaded successfully")
-        
-        logger.info("Core models loaded successfully! Using multilingual models for all languages.")
-        return True
-        
-    except Exception as e:
-        logger.error(f"Error loading core models: {str(e)}")
-        raise
+    max_retries = 3
+    retry_delay = 5
+    
+    for attempt in range(max_retries):
+        try:
+            # Load sentiment analysis model (multilingual)
+            logger.info(f"Loading sentiment model (attempt {attempt + 1}/{max_retries}): cardiffnlp/twitter-xlm-roberta-base-sentiment-multilingual")
+            sentiment_model = pipeline(
+                "sentiment-analysis",
+                model="cardiffnlp/twitter-xlm-roberta-base-sentiment-multilingual",
+                device=device
+            )
+            logger.info("✓ Sentiment model loaded successfully")
+            
+            # Load multilingual toxicity detection model
+            logger.info(f"Loading toxicity model (attempt {attempt + 1}/{max_retries}): unitary/multilingual-toxic-xlm-roberta")
+            toxicity_model = pipeline(
+                "text-classification",
+                model="unitary/multilingual-toxic-xlm-roberta",
+                device=device,
+                top_k=None  # Return all labels with scores
+            )
+            logger.info("✓ Toxicity model loaded successfully")
+            
+            logger.info("Core models loaded successfully! Using multilingual models for all languages.")
+            return True
+            
+        except Exception as e:
+            error_msg = str(e)
+            if "429" in error_msg or "rate limit" in error_msg.lower():
+                if attempt < max_retries - 1:
+                    wait_time = retry_delay * (2 ** attempt)
+                    logger.warning(f"HuggingFace rate limit hit. Retrying in {wait_time}s...")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    logger.error("Failed to load models after multiple retries due to rate limiting")
+            logger.error(f"Error loading core models: {error_msg}")
+            raise
 
 
 
@@ -118,7 +133,7 @@ def analyze_sentiment(text):
         dict: {'label': str, 'score': float}
     """
     if sentiment_model is None:
-        raise ValueError("Sentiment model not loaded")
+        raise ValueError("Sentiment model not loaded. Server may still be starting up.")
     
     result = sentiment_model(text[:512])[0]
     return {
@@ -139,7 +154,7 @@ def analyze_toxicity(text, detected_lang):
         dict: Toxicity analysis with scores, confidence, and threshold
     """
     if toxicity_model is None:
-        raise ValueError("Toxicity model not loaded")
+        raise ValueError("Toxicity model not loaded. Server may still be starting up.")
     
     truncated_text = text[:512]
     
