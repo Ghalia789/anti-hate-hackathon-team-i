@@ -7,6 +7,7 @@ from flask_cors import CORS
 import os
 from datetime import datetime
 import logging
+import threading
 
 # Import ML models module
 import models
@@ -26,10 +27,41 @@ CORS(app, resources={
     }
 })
 
-# Load models at startup (models are pre-downloaded in Docker image, so loading is fast from cache)
-logger.info("Loading ML models from cache...")
-models.load_core_models()
-logger.info("API server ready with models loaded!")
+# Track model loading state
+models_loaded = False
+models_loading = False
+models_lock = threading.Lock()
+
+def load_models_background():
+    """Load models in background thread"""
+    global models_loaded, models_loading
+    try:
+        logger.info("Starting background model loading...")
+        models.load_core_models()
+        with models_lock:
+            models_loaded = True
+            models_loading = False
+        logger.info("Models loaded successfully in background!")
+    except Exception as e:
+        logger.error(f"Failed to load models: {e}")
+        with models_lock:
+            models_loading = False
+
+def ensure_models_loaded():
+    """Ensure models are loaded, start loading if not"""
+    global models_loaded, models_loading
+    with models_lock:
+        if models_loaded:
+            return True
+        if not models_loading:
+            models_loading = True
+            thread = threading.Thread(target=load_models_background, daemon=True)
+            thread.start()
+    return models_loaded
+
+# Start model loading in background at startup
+logger.info("Starting API server - models will load in background...")
+threading.Thread(target=load_models_background, daemon=True).start()
 
 
 @app.route('/api/health', methods=['GET'])
@@ -38,8 +70,8 @@ def health_check():
     return jsonify({
         'status': 'healthy',
         'timestamp': datetime.utcnow().isoformat(),
-        'models_loaded': models.are_models_loaded(),
-        'device': models.get_device_info()
+        'models_loaded': models_loaded,
+        'device': models.get_device_info() if models_loaded else 'loading'
     }), 200
 
 
@@ -48,6 +80,13 @@ def analyze_text():
     """
     Analyze text for sentiment and toxicity in real-time
     """
+    # Check if models are loaded
+    if not models_loaded:
+        return jsonify({
+            'error': 'Models are still loading. Please try again in a few minutes.',
+            'models_loading': True
+        }), 503
+    
     try:
         data = request.get_json()
         
