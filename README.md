@@ -1,4 +1,4 @@
-# Anti-Hate Speech Detection System
+# Hateless - Anti-Hate Speech Detection System
 
 Multilingual hate speech detection powered by AI with browser extension, REST API, and web app.
 
@@ -302,7 +302,7 @@ MIT License - see LICENSE file
 
 ## Team
 
-Anti-Hate Hackathon - Team I
+**Hateless** - Anti-Hate Hackathon Team I
 
 ---
 
