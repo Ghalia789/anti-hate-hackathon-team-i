@@ -21,10 +21,10 @@ COPY . .
 # Create cache directory for transformers
 RUN mkdir -p /app/.cache
 ENV TRANSFORMERS_CACHE=/app/.cache
+ENV HF_HOME=/app/.cache
 
-# Pre-download models during build to avoid HuggingFace rate limits at runtime
-# This adds ~2GB to image but ensures instant startup and no download failures
-RUN python download_models.py
+# NOTE: Models will be downloaded at runtime startup
+# This keeps image size small (~1GB instead of ~10GB) but adds ~2-3min to first startup
 
 # Expose port (Cloud Run uses 8080)
 EXPOSE 8080
@@ -42,5 +42,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=3 \
     CMD python -c "import requests; requests.get('http://localhost:8080/api/health', timeout=5)"
 
 # Run with gunicorn (Cloud Run compatible)
-# Optimized: 2 workers, 4 threads each, timeout 120s
-CMD exec gunicorn --bind :$PORT --workers 2 --threads 4 --worker-class gthread --timeout 120 --access-logfile - --error-logfile - app:app
+# 1 worker with 8 threads - models share memory, threads handle concurrency
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --worker-class gthread --timeout 300 --access-logfile - --error-logfile - app:app

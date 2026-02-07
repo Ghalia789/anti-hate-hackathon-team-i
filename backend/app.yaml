@@ -1,0 +1,41 @@
+runtime: custom
+env: flex
+
+# Configuration des ressources
+resources:
+  cpu: 2
+  memory_gb: 5
+  disk_size_gb: 20
+
+# Scaling automatique
+automatic_scaling:
+  min_num_instances: 1
+  max_num_instances: 4
+  cpu_utilization:
+    target_utilization: 0.65
+  target_concurrent_requests: 10
+
+# Configuration réseau
+network:
+  session_affinity: true
+
+# Variables d'environnement
+env_variables:
+  TRANSFORMERS_CACHE: "/app/.cache"
+
+# Health checks
+liveness_check:
+  path: "/api/health"
+  check_interval_sec: 30
+  timeout_sec: 10
+  failure_threshold: 3
+  success_threshold: 1
+  initial_delay_sec: 300  # 5 min pour charger les modèles
+
+readiness_check:
+  path: "/api/health"
+  check_interval_sec: 10
+  timeout_sec: 10
+  failure_threshold: 3
+  success_threshold: 1
+  app_start_timeout_sec: 600  # 10 min max pour démarrer
