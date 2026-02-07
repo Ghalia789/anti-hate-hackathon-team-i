@@ -1,17 +1,16 @@
 /**
- * Background service worker for HeartShield AI extension
+ * Background service worker for HateLess extension
  * Handles messages between content scripts and popup
  */
 
-// const DEFAULT_API_URL = 'http://localhost:5000/api'  // Local development
-const DEFAULT_API_URL = 'https://hate-speech-api-i67cxdalvq-uc.a.run.app/api'  // Production API
+const DEFAULT_API_URL = 'https://hate-speech-api-486614.uc.r.appspot.com/api'
 
 chrome.runtime.onInstalled.addListener(() => {
-  console.log('💜 HeartShield AI Extension installed')
+  console.log('💜 HateLess Extension installed')
   
-  // Set default settings
+  // Set default settings — detection ON by default
   chrome.storage.sync.set({ 
-    isActive: false,
+    isActive: true,
     apiUrl: DEFAULT_API_URL,
     stats: { analyzed: 0, blocked: 0 }
   })

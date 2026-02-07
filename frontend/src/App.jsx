@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import './App.css'
+import { FiPower, FiSearch, FiSettings, FiCheckCircle, FiXCircle, FiGlobe, FiAlertTriangle, FiShield } from 'react-icons/fi'
 
-// const API_URL = 'http://localhost:5001/api'  // Local development
-const API_URL = 'https://hate-speech-api-i67cxdalvq-uc.a.run.app/api'  // Production API
+const API_URL = 'https://hate-speech-api-486614.uc.r.appspot.com/api'
 
 // Translations for all supported languages
 const translations = {
@@ -13,7 +13,6 @@ const translations = {
     analyzed: 'Analyzed',
     blocked: 'Blocked',
     analyze: 'Analyze',
-    activity: 'Activity',
     settings: 'Settings',
     placeholder: 'Paste or type text to check for hate speech, toxicity, or harmful content...',
     clear: 'Clear',
@@ -28,8 +27,6 @@ const translations = {
     safeContent: '✓ Content is Safe',
     confidence: 'Confidence',
     breakdown: 'Breakdown',
-    activityLog: 'Activity Log',
-    activityDesc: 'Your recent analysis history will appear here',
     appearance: 'Appearance',
     darkMode: '🌙 Dark Mode',
     lightMode: '☀️ Light Mode',
@@ -54,7 +51,6 @@ const translations = {
     analyzed: 'Analysés',
     blocked: 'Bloqués',
     analyze: 'Analyser',
-    activity: 'Activité',
     settings: 'Paramètres',
     placeholder: 'Collez ou tapez du texte pour vérifier les discours haineux, la toxicité ou le contenu nuisible...',
     clear: 'Effacer',
@@ -69,8 +65,6 @@ const translations = {
     safeContent: '✓ Contenu Sûr',
     confidence: 'Confiance',
     breakdown: 'Détails',
-    activityLog: 'Journal d\'Activité',
-    activityDesc: 'Votre historique d\'analyse récent apparaîtra ici',
     appearance: 'Apparence',
     darkMode: '🌙 Mode Sombre',
     lightMode: '☀️ Mode Clair',
@@ -83,7 +77,7 @@ const translations = {
     languages: 'Langues',
     interfaceLang: 'Langue de l\'Interface',
     statistics: 'Statistiques',
-    totalAnalyzed: 'Total Analysé',
+    totalAnalyzed: 'Total Analyzed',
     resetStats: 'Réinitialiser',
     clickDisable: 'Cliquer pour désactiver',
     clickEnable: 'Cliquer pour activer'
@@ -95,7 +89,6 @@ const translations = {
     analyzed: 'محلل',
     blocked: 'محظور',
     analyze: 'تحليل',
-    activity: 'النشاط',
     settings: 'الإعدادات',
     placeholder: 'الصق أو اكتب نصًا للتحقق من خطاب الكراهية أو السمية أو المحتوى الضار...',
     clear: 'مسح',
@@ -110,8 +103,6 @@ const translations = {
     safeContent: '✓ المحتوى آمن',
     confidence: 'الثقة',
     breakdown: 'التفاصيل',
-    activityLog: 'سجل النشاط',
-    activityDesc: 'سيظهر سجل التحليل الأخير هنا',
     appearance: 'المظهر',
     darkMode: '🌙 الوضع الداكن',
     lightMode: '☀️ الوضع الفاتح',
@@ -136,7 +127,6 @@ const translations = {
     analyzed: 'Analizzati',
     blocked: 'Bloccati',
     analyze: 'Analizza',
-    activity: 'Attività',
     settings: 'Impostazioni',
     placeholder: 'Incolla o digita testo per verificare discorsi d\'odio, tossicità o contenuti dannosi...',
     clear: 'Cancella',
@@ -151,8 +141,6 @@ const translations = {
     safeContent: '✓ Contenuto Sicuro',
     confidence: 'Confidenza',
     breakdown: 'Dettagli',
-    activityLog: 'Registro Attività',
-    activityDesc: 'La cronologia delle analisi recenti apparirà qui',
     appearance: 'Aspetto',
     darkMode: '🌙 Modalità Scura',
     lightMode: '☀️ Modalità Chiara',
@@ -192,7 +180,7 @@ function App() {
       setIsActive(data.isActive || false)
       setIsChildMode(data.isChildMode || false)
       setIsDarkMode(data.isDarkMode !== false) // Default to dark mode
-      setLang(data.lang || 'en')
+      setLang(data.lang && data.lang !== 'ar' ? data.lang : 'fr')
       setStats(data.stats || { analyzed: 0, blocked: 0 })
     })
   }, [])
@@ -314,11 +302,11 @@ function App() {
         <div className="header-left">
           <div className="logo">
             <div className={`logo-icon ${isActive ? 'active' : ''}`}>
-              <img src="icons/icon-128.png" alt="HeartShield" />
+              <img src="icons/icon-128.png" alt="HateLess" />
               {isActive && <div className="logo-pulse"></div>}
             </div>
             <div className="logo-text">
-              <span className="logo-title">HeartShield <span className="ai-badge">AI</span></span>
+              <span className="logo-title">HateLess</span>
               <span className="logo-subtitle">{t.subtitle}</span>
             </div>
           </div>
@@ -328,10 +316,7 @@ function App() {
           onClick={toggleExtension}
           title={isActive ? t.clickDisable : t.clickEnable}
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <path d="M18.36 6.64a9 9 0 1 1-12.73 0"/>
-            <line x1="12" y1="2" x2="12" y2="12"/>
-          </svg>
+          <FiPower />
         </button>
       </header>
 
@@ -362,30 +347,14 @@ function App() {
           className={`tab ${activeTab === 'analyze' ? 'active' : ''}`}
           onClick={() => setActiveTab('analyze')}
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="11" cy="11" r="8"/>
-            <path d="m21 21-4.35-4.35"/>
-          </svg>
+          <FiSearch />
           {t.analyze}
-        </button>
-        <button 
-          className={`tab ${activeTab === 'history' ? 'active' : ''}`}
-          onClick={() => setActiveTab('history')}
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="12" cy="12" r="10"/>
-            <polyline points="12 6 12 12 16 14"/>
-          </svg>
-          {t.activity}
         </button>
         <button 
           className={`tab ${activeTab === 'settings' ? 'active' : ''}`}
           onClick={() => setActiveTab('settings')}
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-          </svg>
+          <FiSettings />
           {t.settings}
         </button>
       </div>
@@ -425,10 +394,7 @@ function App() {
                 </>
               ) : (
                 <>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                    <polyline points="22 4 12 14.01 9 11.01"/>
-                  </svg>
+                  <FiCheckCircle />
                   {t.analyzeText}
                 </>
               )}
@@ -436,11 +402,7 @@ function App() {
 
             {error && (
               <div className="error-card">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10"/>
-                  <line x1="15" y1="9" x2="9" y2="15"/>
-                  <line x1="9" y1="9" x2="15" y2="15"/>
-                </svg>
+                <FiXCircle />
                 <span>{error}</span>
               </div>
             )}
@@ -451,11 +413,7 @@ function App() {
                 {result.language && (
                   <div className="result-card language-card">
                     <div className="card-header">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <line x1="2" y1="12" x2="22" y2="12"/>
-                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                      </svg>
+                      <FiGlobe />
                       <span>{t.languageDetected}</span>
                     </div>
                     <div className="language-display">
@@ -499,16 +457,9 @@ function App() {
                 <div className={`result-card toxicity-card ${result.toxicity?.is_toxic ? 'toxic' : 'safe'}`}>
                   <div className="card-header">
                     {result.toxicity?.is_toxic ? (
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                        <line x1="12" y1="9" x2="12" y2="13"/>
-                        <line x1="12" y1="17" x2="12.01" y2="17"/>
-                      </svg>
+                        <FiAlertTriangle />
                     ) : (
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                        <polyline points="22 4 12 14.01 9 11.01"/>
-                      </svg>
+                        <FiCheckCircle />
                     )}
                     <span>{t.toxicityAnalysis}</span>
                   </div>
@@ -559,19 +510,6 @@ function App() {
           </div>
         )}
 
-        {activeTab === 'history' && (
-          <div className="history-section">
-            <div className="empty-state">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <circle cx="12" cy="12" r="10"/>
-                <polyline points="12 6 12 12 16 14"/>
-              </svg>
-              <h3>{t.activityLog}</h3>
-              <p>{t.activityDesc}</p>
-            </div>
-          </div>
-        )}
-
         {activeTab === 'settings' && (
           <div className="settings-section">
             <div className="setting-group">
@@ -581,7 +519,6 @@ function App() {
               <div className="languages-grid">
                 <div className={`language-chip ${lang === 'en' ? 'active' : ''}`} onClick={() => changeLanguage('en')}>🇬🇧 English</div>
                 <div className={`language-chip ${lang === 'fr' ? 'active' : ''}`} onClick={() => changeLanguage('fr')}>🇫🇷 Français</div>
-                <div className={`language-chip ${lang === 'ar' ? 'active' : ''}`} onClick={() => changeLanguage('ar')}>🇸🇦 العربية</div>
                 <div className={`language-chip ${lang === 'it' ? 'active' : ''}`} onClick={() => changeLanguage('it')}>🇮🇹 Italiano</div>
               </div>
             </div>
@@ -647,10 +584,7 @@ function App() {
               <div className="stats-grid">
                 <div className="stats-card">
                   <div className="stats-icon blue">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="11" cy="11" r="8"/>
-                      <path d="m21 21-4.35-4.35"/>
-                    </svg>
+                    <FiSearch />
                   </div>
                   <div className="stats-info">
                     <span className="stats-number">{stats.analyzed}</span>
@@ -659,9 +593,7 @@ function App() {
                 </div>
                 <div className="stats-card">
                   <div className="stats-icon red">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                    </svg>
+                    <FiShield />
                   </div>
                   <div className="stats-info">
                     <span className="stats-number">{stats.blocked}</span>
@@ -681,7 +613,7 @@ function App() {
             </div>
 
             <div className="about-section">
-              <p className="version">HeartShield AI v1.0.0</p>
+              <p className="version">HateLess v1.0.0</p>
               <p className="copyright">Powered by ML Models</p>
             </div>
           </div>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Test HateLess Extension</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+    h1 { color: #1e1b4b; }
+    .test-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin: 20px 0; }
+    h2 { color: #334155; margin-top: 0; }
+    textarea { width: 100%; height: 80px; font-size: 16px; padding: 12px; border: 2px solid #cbd5e1; border-radius: 8px; }
+    input[type="text"] { width: 100%; font-size: 16px; padding: 12px; border: 2px solid #cbd5e1; border-radius: 8px; }
+    .hate-text { background: #fef2f2; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #dc2626; }
+    button { background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; margin: 5px; }
+    button:hover { background: #2563eb; }
+    .instructions { background: #eff6ff; padding: 15px; border-radius: 8px; border-left: 4px solid #3b82f6; margin: 15px 0; }
+    #status { padding: 10px; border-radius: 8px; margin: 10px 0; font-weight: bold; }
+    .editable { border: 2px solid #cbd5e1; border-radius: 8px; padding: 12px; min-height: 60px; font-size: 16px; }
+    form { display: flex; gap: 10px; align-items: flex-end; }
+    form textarea { flex: 1; }
+  </style>
+</head>
+<body>
+  <h1>🛡️ Test HateLess Extension</h1>
+  
+  <div class="instructions">
+    <strong>Instructions :</strong>
+    <ol>
+      <li>Ouvrez cette page dans Chrome avec l'extension installée</li>
+      <li>Vous devriez voir le panneau "HateLess" en bas à droite</li>
+      <li>Tapez des mots haineux dans les champs ci-dessous</li>
+      <li>Appuyez sur Entrée ou cliquez Envoyer pour tester l'interception</li>
+    </ol>
+  </div>
+
+  <div id="status" style="background: #fef3c7; color: #92400e;">
+    ⏳ Vérification de l'extension...
+  </div>
+
+  <script>
+    // Check if extension is loaded
+    setTimeout(() => {
+      const panel = document.querySelector('.hateshield-control-panel');
+      const styles = document.getElementById('hateshield-styles');
+      const status = document.getElementById('status');
+      if (panel || styles) {
+        status.style.background = '#dcfce7';
+        status.style.color = '#166534';
+        status.textContent = '✅ Extension HateLess chargée avec succès !';
+      } else {
+        status.style.background = '#fef2f2';
+        status.style.color = '#991b1b';
+        status.textContent = '❌ Extension NON détectée ! Vérifiez chrome://extensions';
+      }
+    }, 2000);
+  </script>
+
+  <!-- TEST 1: Textarea -->
+  <div class="test-section">
+    <h2>Test 1 — Textarea + Bouton Envoyer</h2>
+    <p>Tapez "fuck you" ou "je te hais" puis cliquez Envoyer :</p>
+    <form onsubmit="event.preventDefault(); alert('Form submitted!')">
+      <textarea id="test-textarea" placeholder="Tapez un message haineux ici..."></textarea>
+      <button type="submit">Envoyer</button>
+    </form>
+  </div>
+
+  <!-- TEST 2: Input text + Enter -->
+  <div class="test-section">
+    <h2>Test 2 — Input + Entrée</h2>
+    <p>Tapez "merde" ou "idiot" puis appuyez Entrée :</p>
+    <input type="text" id="test-input" placeholder="Tapez un message ici et appuyez Entrée...">
+  </div>
+
+  <!-- TEST 3: Contenteditable (like Gmail/Facebook) -->
+  <div class="test-section">
+    <h2>Test 3 — Contenteditable (Gmail/Facebook style)</h2>
+    <p>Tapez "putain" ou "asshole" :</p>
+    <div contenteditable="true" class="editable" role="textbox" id="test-editable" placeholder="Tapez ici..."></div>
+    <button onclick="alert('Send clicked!')">Envoyer</button>
+  </div>
+
+  <!-- TEST 4: Existing hateful content on page -->
+  <div class="test-section">
+    <h2>Test 4 — Contenu haineux existant (mode enfant)</h2>
+    <p>En mode enfant, ces mots devraient être cachés :</p>
+    <div class="hate-text">
+      <p>Message 1 : "You are such an idiot, go fuck yourself"</p>
+      <p>Message 2 : "Tu es une putain de merde, va crever"</p>
+      <p>Message 3 : "sei uno stronzo, vaffanculo"</p>
+      <p>Message 4 : "أنت غبي يا كلب"</p>
+    </div>
+  </div>
+
+  <!-- TEST 5: Delete test -->
+  <div class="test-section">
+    <h2>Test 5 — Test Suppression</h2>
+    <p>Tapez "connard" puis appuyez Entrée, choisissez "Supprimer" :</p>
+    <textarea id="test-delete" placeholder="Tapez connard ici..."></textarea>
+  </div>
+
+</body>
+</html>

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Anti-Hate Speech Detector",
+  "name": "HateLess - Anti-Hate Speech",
   "version": "1.0.0",
-  "description": "Détection en temps réel de contenus haineux avec IA multilingue (FR, EN, AR, IT, ES)",
+  "description": "Real-time AI-powered hate speech detection with multilingual sentiment and toxicity analysis.",
   
   "permissions": [
     "activeTab",
@@ -10,8 +10,8 @@
   ],
   
   "host_permissions": [
-    "https://*.run.app/*",
-    "https://*.googleapis.com/*"
+    "https://*/*",
+    "http://localhost:5001/*"
   ],
   
   "content_scripts": [
@@ -22,29 +22,33 @@
       "js": [
         "extension-content.js"
       ],
-      "css": [
-        "extension-styles.css"
-      ],
       "run_at": "document_idle"
     }
   ],
   
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "frontend/dist/popup.html",
     "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
+      "16": "frontend/dist/icons/icon-16.png",
+      "48": "frontend/dist/icons/icon-48.png",
+      "128": "frontend/dist/icons/icon-128.png"
     }
   },
   
   "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+    "16": "frontend/dist/icons/icon-16.png",
+    "48": "frontend/dist/icons/icon-48.png",
+    "128": "frontend/dist/icons/icon-128.png"
   },
   
   "background": {
     "service_worker": "background.js"
-  }
+  },
+
+  "web_accessible_resources": [
+    {
+      "resources": ["frontend/dist/icons/*", "icon.png"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

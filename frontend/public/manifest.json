@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "HeartShield AI - Anti-Hate Speech",
+  "name": "HateLess - Anti-Hate Speech",
   "version": "1.0.0",
   "description": "Real-time AI-powered hate speech detection with multilingual sentiment and toxicity analysis. Protect yourself from harmful content.",
   "permissions": [
@@ -13,7 +13,7 @@
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "HeartShield AI",
+    "default_title": "HateLess",
     "default_icon": {
       "16": "icons/icon-16.png",
       "32": "icons/icon-32.png",
