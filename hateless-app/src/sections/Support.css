@@ -1,0 +1,348 @@
+/* ==================== */
+/* Support Section */
+/* ==================== */
+.support {
+  padding: 6rem 2rem;
+  background: #ffffff;
+  font-family: "Inter", sans-serif;
+  color: #0f172a;
+}
+
+.support-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.support-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.support-header h2 {
+  font-size: 2.5rem;
+  color: #0f172a;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.support-header p {
+  font-size: 1.1rem;
+  color: #64748b;
+}
+
+/* Quick Help */
+.quick-help {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.help-card {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 20px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+}
+
+.help-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 30px 60px rgba(15, 23, 42, 0.12);
+  border-color: #ff1f5f;
+}
+
+.help-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+.help-card-featured {
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  position: relative;
+}
+
+.help-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.help-card h3 {
+  color: #0f172a;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+}
+
+.help-card p {
+  color: #475569;
+  margin-bottom: 1.5rem;
+  line-height: 1.7;
+  position: relative;
+  z-index: 1;
+}
+
+.help-numbers {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  position: relative;
+  z-index: 1;
+}
+
+.help-numbers a {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary-pink);
+  color: var(--white);
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.help-numbers a:hover {
+  background-color: #E01551;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 30, 95, 0.3);
+}
+
+/* FAQs */
+.faqs {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+  color: var(--white);
+  padding: 3rem;
+  border-radius: 16px;
+}
+
+.faqs h3 {
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.faq-list {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.faq-item {
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  border-left: 4px solid var(--primary-orange);
+}
+
+.faq-item h4 {
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+}
+
+.faq-item p {
+  opacity: 0.95;
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .support {
+    padding: 2rem 1.5rem;
+  }
+
+  .support-header h2 {
+    font-size: 2rem;
+  }
+
+  .quick-help {
+    grid-template-columns: 1fr;
+  }
+
+  .help-card-featured {
+    grid-column: 1;
+  }
+
+  .faqs {
+    padding: 2rem;
+  }
+
+  .faq-list {
+    gap: 1rem;
+  }
+}
+
+/* Community Modal */
+.community-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+}
+
+.community-modal {
+  background-color: var(--white);
+  border-radius: 16px;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.community-modal .modal-close {
+  position: sticky;
+  top: 1rem;
+  right: 1rem;
+  width: 40px;
+  height: 40px;
+  background-color: var(--primary-pink);
+  color: var(--white);
+  border: none;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  margin-left: auto;
+  z-index: 1001;
+}
+
+.community-modal .modal-close:hover {
+  background-color: #E01551;
+  transform: scale(1.1);
+}
+
+.community-modal .modal-header {
+  padding: 2rem;
+  border-bottom: 2px solid var(--primary-orange);
+  background: linear-gradient(135deg, rgba(255, 184, 0, 0.05) 0%, rgba(26, 23, 86, 0.02) 100%);
+}
+
+.community-modal .modal-header h2 {
+  color: var(--primary-blue);
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.community-modal .modal-body {
+  padding: 2rem;
+  color: var(--text-dark);
+  line-height: 1.8;
+}
+
+.community-modal h3 {
+  color: var(--primary-blue);
+  font-size: 1.3rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  border-left: 4px solid var(--primary-orange);
+  padding-left: 1rem;
+}
+
+.community-modal h3:first-child {
+  margin-top: 0;
+}
+
+.community-modal ul {
+  margin-bottom: 1.5rem;
+  margin-left: 2rem;
+}
+
+.community-modal li {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.community-join {
+  background: linear-gradient(135deg, rgba(255, 184, 0, 0.05) 0%, rgba(255, 30, 95, 0.05) 100%);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 2px solid var(--primary-orange);
+  margin-top: 2rem;
+}
+
+.community-join p {
+  margin-bottom: 1rem;
+  color: var(--primary-blue);
+  font-weight: 500;
+}
+
+.community-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.community-form input,
+.community-form textarea {
+  padding: 0.75rem 1rem;
+  border: 1px solid #DDD;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.community-form input:focus,
+.community-form textarea:focus {
+  outline: none;
+  border-color: var(--primary-pink);
+  box-shadow: 0 0 0 3px rgba(255, 30, 95, 0.1);
+}
+
+.community-form button {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary-pink);
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.community-form button:hover {
+  background-color: #E01551;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 30, 95, 0.3);
+}
+
+@media (max-width: 768px) {
+  .community-modal {
+    max-height: 95vh;
+    max-width: 95vw;
+    border-radius: 12px;
+  }
+
+  .community-modal .modal-header,
+  .community-modal .modal-body {
+    padding: 1.5rem;
+  }
+
+  .community-modal .modal-header h2 {
+    font-size: 1.5rem;
+  }
+}

@@ -1,0 +1,183 @@
+/* ==================== */
+/* Color Palette - Hate Speech Shield */
+/* ==================== */
+:root {
+  /* Primary Colors - Refined */
+  --primary-blue: #1A2238; /* softer navy */
+  --primary-blue-light: #2D3A5C; /* lighter indigo */
+  --primary-blue-dark: #0F1629; /* for gradients */
+  --primary-orange: #FFB800; /* accent for badges */
+  --primary-pink: #E94E89; /* vibrant magenta */
+  
+  /* Secondary Colors */
+  --accent-orange: #FF9F1C;
+  --accent-pink: #FF6B9D;
+  --accent-purple: #7B68EE;
+  --accent-cyan: #00D4FF;
+  
+  /* Neutral Colors */
+  --text-dark: #1A2238;
+  --text-light: #5B647A;
+  --text-very-light: #8A8FA3;
+  --text-on-dark: #F0F2F8;
+  --text-muted-on-dark: #B8C0D0;
+  --white: #FFFFFF;
+  --light-gray: #F5F7FA;
+  --bg-light: #141B2D; /* refined dark background */
+  --bg-gradient-start: #1A2238;
+  --bg-gradient-end: #0F1629;
+  
+  /* Layout/Components */
+  --header-bg: linear-gradient(135deg, #9B2C5C 0%, #7B2248 100%);
+  --card-bg: #FFFFFF;
+  --border-color: #3D4A6B;
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+}
+
+/* ==================== */
+/* General Styles */
+/* ==================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-on-dark);
+  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 50%, var(--bg-gradient-start) 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  line-height: 1.6;
+  min-height: 100vh;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(ellipse at 20% 20%, rgba(233, 78, 137, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(123, 104, 238, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(0, 212, 255, 0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+.main-content {
+  flex: 1;
+}
+
+/* ==================== */
+/* Buttons */
+/* ==================== */
+.btn {
+  padding: 0.75rem 2rem;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-pink) 0%, #C73B6F 100%);
+  color: var(--white);
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(233, 78, 137, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(233, 78, 137, 0.4);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--primary-pink);
+  border-color: var(--primary-pink);
+  backdrop-filter: blur(5px);
+}
+
+.btn-secondary:hover {
+  background: rgba(233, 78, 137, 0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(233, 78, 137, 0.2);
+}
+
+.btn-orange {
+  background: linear-gradient(135deg, var(--primary-orange) 0%, var(--accent-orange) 100%);
+  color: var(--text-dark);
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(255, 184, 0, 0.3);
+}
+
+.btn-orange:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 184, 0, 0.4);
+}
+
+.btn-large {
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+}
+
+/* ==================== */
+/* Responsive Design */
+/* ==================== */
+@media (max-width: 768px) {
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 14px;
+  }
+}

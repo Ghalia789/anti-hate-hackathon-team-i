@@ -1,0 +1,132 @@
+.api-access {
+  padding: 6rem 1rem;
+  background: #ffffff;
+  font-family: "Inter", sans-serif;
+}
+
+.api-access-container {
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* HEADER */
+.api-access-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.api-access-header h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.8rem;
+}
+
+.api-access-header p {
+  font-size: 1.05rem;
+  color: #64748b;
+  max-width: 520px;
+  margin: auto;
+}
+
+/* GRID */
+.api-access-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: flex-start;
+}
+
+/* CODE CARD */
+.code-card {
+  background: #0f172a;
+  border-radius: 20px;
+  padding: 1.8rem;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25);
+}
+
+.code-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.code-lang {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: #c7d2fe;
+  font-weight: 500;
+}
+
+.copy-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  background: transparent;
+  border: none;
+  color: #e0e7ff;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.copy-btn:hover {
+  opacity: 1;
+}
+
+.code-card pre {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #f8fafc;
+  font-family: "Courier New", monospace;
+  overflow-x: auto;
+}
+
+/* FEATURES */
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
+.feature {
+  display: flex;
+  gap: 1rem;
+}
+
+.feature-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(255, 30, 95, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-pink);
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.feature h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 0.3rem;
+}
+
+.feature p {
+  font-size: 0.9rem;
+  color: #475569;
+  line-height: 1.5;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .api-access-grid {
+    grid-template-columns: 1fr;
+  }
+}
