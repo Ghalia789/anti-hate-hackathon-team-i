@@ -5,6 +5,8 @@ Multilingual hate speech detection powered by AI with browser extension, REST AP
 **API:** Deployed on GCP App Engine  
 **Web App:** https://hateless-185803036804.europe-west1.run.app/
 
+> **Note:** With the API deployed on GCP App Engine, both the web app and browser extension provide instant responses with pre-loaded ML models (~600-900ms). The API is open and free for developers to integrate into their applications.
+
 ## Quick Links
 
 - **[Docker Quickstart](DOCKER_QUICKSTART.md)** - Fast setup with Docker
@@ -24,10 +26,10 @@ Multilingual hate speech detection powered by AI with browser extension, REST AP
 - **Real-time browser detection** during typing
 - **Browser extension** compatible with Chrome, Firefox, Brave
 - **Web application** for standalone text analysis
-- **Flask REST API** with pre-loaded models
-- **Optimal response time**: ~600-900ms depending on language and hardware
+- **Flask REST API** with pre-loaded models on GCP App Engine
+- **Instant responses**: ~600-900ms analysis time (models kept in memory on deployed server)
 - **Full Docker support** for easy deployment
-- **Deployed on GCP App Engine**
+- **Production-ready**: Deployed and accessible 24/7
 
 ## Architecture
 
@@ -125,6 +127,8 @@ docker run -p 8080:8080 anti-hate-api:latest
 ```
 
 ## API Endpoints
+
+The API is **publicly accessible** and free for developers to use. See [API_EXAMPLES.md](API_EXAMPLES.md) for detailed integration examples.
 
 ### Health Check
 ```bash
