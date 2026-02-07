@@ -1,116 +1,122 @@
 # Anti-Hate Speech Detection System
 
-Extension navigateur avec API REST pour la détection en temps réel de hate speech multilingue.
+Multilingual hate speech detection powered by AI with browser extension, REST API, and web app.
 
-## 📚 Documentation Rapide
+**API:** Deployed on GCP App Engine  
+**Web App:** https://hateless-185803036804.europe-west1.run.app/
 
-- **[Démarrage avec Docker](DOCKER_QUICKSTART.md)** - Guide rapide pour Docker
-- **[Déploiement GCP](GCP_DEPLOYMENT.md)** - Déploiement sur Google Cloud
-- **[Exemples d'API](API_EXAMPLES.md)** - Exemples d'utilisation de l'API
-- **[Checklist Déploiement](DEPLOYMENT_CHECKLIST.md)** - Vérification complète du système
-- **[Backend README](backend/README.md)** - Documentation backend détaillée
-- **[Frontend README](frontend/README.md)** - Documentation extension
+## Quick Links
 
-## Fonctionnalités
+- **[Docker Quickstart](DOCKER_QUICKSTART.md)** - Fast setup with Docker
+- **[GCP Deployment](GCP_DEPLOYMENT.md)** - Deploy to Google Cloud
+- **[API Examples](API_EXAMPLES.md)** - API usage examples
+- **[Deployment Checklist](DEPLOYMENT_CHECKLIST.md)** - Complete system verification
+- **[Backend README](backend/README.md)** - Detailed backend documentation
+- **[Frontend README](frontend/README.md)** - Extension documentation
 
-- **Analyse de sentiment multilingue** avec `cardiffnlp/twitter-xlm-roberta-base-sentiment-multilingual`
-- **Détection de toxicité avancée** avec `unitary/multilingual-toxic-xlm-roberta`
-- **Détection automatique de la langue** avec support pour français, anglais, arabe, italien
-- **Reconnaissance des dialectes arabes** : tunisien, marocain, jordanien
-- **Seuils adaptatifs** : 35% italien, 40% arabe/français, 45% autres langues
-- **Détection en temps réel** dans le navigateur pendant la saisie
-- **Extension navigateur** compatible Chrome, Firefox, Brave
-- **API REST Flask** avec chargement des modèles au démarrage
-- **Temps de réponse optimal** : ~600-900ms selon la langue et la machine
-- **Dockerisation** complète pour déploiement facile
-- **Compatible GCP Compute Engine**
+## Features
+
+- **Multilingual sentiment analysis** with `cardiffnlp/twitter-xlm-roberta-base-sentiment-multilingual`
+- **Advanced toxicity detection** with `unitary/multilingual-toxic-xlm-roberta`
+- **Automatic language detection** supporting French, English, Arabic, Italian
+- **Arabic dialect recognition**: Tunisian, Moroccan, Jordanian
+- **Adaptive thresholds**: 35% Italian, 40% Arabic/French, 45% other languages
+- **Real-time browser detection** during typing
+- **Browser extension** compatible with Chrome, Firefox, Brave
+- **Web application** for standalone text analysis
+- **Flask REST API** with pre-loaded models
+- **Optimal response time**: ~600-900ms depending on language and hardware
+- **Full Docker support** for easy deployment
+- **Deployed on GCP App Engine**
 
 ## Architecture
 
 ```
 anti-hate-hackathon-team-i/
-├── backend/                    # API Flask
-│   ├── app.py                 # Routes API Flask
-│   ├── models.py              # Logique ML et modèles
+├── backend/                    # Flask API
+│   ├── app.py                 # Flask API routes
+│   ├── models.py              # ML logic and models
 │   ├── config.py              # Configuration
-│   ├── requirements.txt       # Dépendances Python
-│   ├── Dockerfile            # Image Docker
-│   ├── .dockerignore         # Optimisation build
-│   └── .env.example          # Variables d'environnement
-├── frontend/                  # Extension React
+│   ├── requirements.txt       # Python dependencies
+│   ├── Dockerfile            # Docker image
+│   └── app.yaml              # GCP App Engine config
+├── frontend/                  # React Extension & Web App
 │   ├── src/
-│   │   ├── App.jsx           # Interface popup
+│   │   ├── App.jsx           # Main interface
 │   │   ├── App.css           # Styles
 │   │   ├── background.js     # Service worker
-│   │   └── content.js        # Script de détection
+│   │   └── content.js        # Detection script
 │   ├── public/
-│   │   └── manifest.json     # Manifest extension
-│   ├── package.json
-│   └── vite.config.js
-├── docker-compose.yml         # Configuration Docker
-├── DOCKER_QUICKSTART.md       # Guide rapide Docker
-├── GCP_DEPLOYMENT.md          # Guide déploiement GCP
-├── DEPLOYMENT_CHECKLIST.md    # Vérification système
-└── API_EXAMPLES.md            # Exemples API
+│   │   └── manifest.json     # Extension manifest
+│   └── package.json
+├── docker-compose.yml         # Docker configuration
+├── API_EXAMPLES.md            # API examples
+└── GCP_DEPLOYMENT.md          # GCP deployment guide
 ```
 
-## Démarrage Rapide
+## Quick Start
+
+### Web App
+
+Access the live web app at: **https://hateless-185803036804.europe-west1.run.app/**
+
+Simply paste your text and get instant hate speech analysis.
 
 ### Backend (API)
 
-1. **Installation des dépendances**
+1. **Install dependencies**
 ```bash
 cd backend
 pip install -r requirements.txt
 ```
 
-2. **Lancer l'API**
+2. **Start the API**
 ```bash
 python app.py
 ```
 
-L'API sera disponible sur `http://localhost:8080` (ou le port défini via `PORT`).
-Avec `docker-compose`, l'API est exposée sur `http://localhost:5000` par défaut.
+The API will be available at `http://localhost:8080` (or the port defined via `PORT`).
+With `docker-compose`, the API is exposed on `http://localhost:5000` by default.
 
-**Note importante** : Au premier démarrage, les modèles ML de base seront téléchargés automatiquement (~2-3GB) et mis en cache localement.
+**Important**: On first startup, ML models will be automatically downloaded (~2-3GB) and cached locally.
 
-### Frontend (Extension)
+### Frontend (Browser Extension)
 
-1. **Installation des dépendances**
+1. **Install dependencies**
 ```bash
 cd frontend
 npm install
 ```
 
-2. **Build de l'extension**
+2. **Build the extension**
 ```bash
 npm run build
 ```
 
-3. **Installation dans le navigateur**
+3. **Install in browser**
 
 **Chrome/Brave:**
-- Ouvrir `chrome://extensions/`
-- Activer "Mode développeur"
-- Cliquer "Charger l'extension non empaquetée"
-- Sélectionner le dossier `frontend/dist`
+- Open `chrome://extensions/`
+- Enable "Developer mode"
+- Click "Load unpacked"
+- Select the `frontend/dist` folder
 
 **Firefox:**
-- Ouvrir `about:debugging#/runtime/this-firefox`
-- Cliquer "Charger un module complémentaire temporaire"
-- Sélectionner `frontend/dist/manifest.json`
+- Open `about:debugging#/runtime/this-firefox`
+- Click "Load Temporary Add-on"
+- Select `frontend/dist/manifest.json`
 
 ## Docker
 
-### Lancer avec Docker Compose
+### Using Docker Compose
 
 ```bash
 docker-compose up -d
 ```
 
-Par défaut, `docker-compose` expose l'API sur `http://localhost:5000`.
+By default, `docker-compose` exposes the API on `http://localhost:5000`.
 
-### Build manuel
+### Manual Build
 
 ```bash
 cd backend
@@ -203,114 +209,96 @@ CORS_ORIGINS=http://localhost:3000,chrome-extension://*
 ```
 
 ### Frontend
-Modifier `API_URL` dans `src/App.jsx` pour pointer vers votre backend :
+Modify `API_URL` in `src/App.jsx` to point to your backend:
 ```javascript
 const API_URL = 'http://your-backend-url:8080/api'
 ```
 
-## Déploiement GCP
+## GCP Deployment
 
-Voir le fichier [GCP_DEPLOYMENT.md](GCP_DEPLOYMENT.md) pour les instructions détaillées.
+The API is currently deployed on **GCP App Engine**.
 
-**Résumé rapide :**
+See [GCP_DEPLOYMENT.md](GCP_DEPLOYMENT.md) for detailed instructions.
+
+**Quick summary:**
 
 ```bash
-# 1. Build et push vers GCR
+# 1. Build and push to GCR
 docker build -t anti-hate-api ./backend
 docker tag anti-hate-api gcr.io/YOUR_PROJECT/anti-hate-api
 docker push gcr.io/YOUR_PROJECT/anti-hate-api
 
-# 2. Créer une instance Compute Engine
-gcloud compute instances create-with-container anti-hate-api-vm \
-    --container-image=gcr.io/YOUR_PROJECT/anti-hate-api:latest \
-    --machine-type=e2-standard-2 \
-    --zone=us-central1-a
-
-# 3. Configurer le firewall
-gcloud compute firewall-rules create allow-http-5000 \
-    --allow=tcp:5000 \
-    --target-tags=http-server
+# 2. Deploy to Cloud Run
+gcloud run deploy hateless \
+    --image gcr.io/YOUR_PROJECT/anti-hate-api:latest \
+    --platform managed \
+    --region europe-west1 \
+    --allow-unauthenticated
 ```
 
-## Utilisation de l'Extension
+## Using the Extension
 
-1. **Activer l'extension** : Cliquer sur l'icône et activer la détection
-2. **Taper du texte** : La détection se fait automatiquement pendant la saisie
-3. **Voir les résultats** : Les alertes apparaissent sous les champs texte détectés comme toxiques
-4. **Analyse manuelle** : Utiliser le popup pour analyser du texte spécifique
+1. **Activate the extension**: Click the icon and enable detection
+2. **Type text**: Detection happens automatically while typing
+3. **View results**: Alerts appear below text fields detected as toxic
+4. **Manual analysis**: Use the popup to analyze specific text
 
-## Modèles ML
+## ML Models
 
 ### Sentiment Analysis
-- **Modèle** : `cardiffnlp/twitter-xlm-roberta-base-sentiment-multilingual`
-- **Type** : Classification de sentiment
-- **Sorties** : positive, neutral, negative
-- **Langues** : 100+ langues supportées
-- **Chargement** : Au démarrage
+- **Model**: `cardiffnlp/twitter-xlm-roberta-base-sentiment-multilingual`
+- **Type**: Sentiment classification
+- **Outputs**: positive, neutral, negative
+- **Languages**: 100+ languages supported
+- **Loading**: At startup
 
 ### Toxicity Detection
 
-Le système utilise **1 modèle de toxicité multilingue** pour toutes les langues :
+The system uses **1 multilingual toxicity model** for all languages:
 
-- **Modèle** : `unitary/multilingual-toxic-xlm-roberta`
-- **Type** : Classification multi-labels
-- **Sorties** : toxic, severe_toxic, obscene, threat, insult, identity_hate
-- **Langues** : Multilingue (français, anglais, italien, arabe)
-- **Chargement** : Au démarrage (~2GB)
-- **Dialectes supportés (détection)** :
-  - Tunisien : برشا, ياسر, كان, زادة, حاجة
-  - Marocain : بزاف, واخا, غير, بغيت, كيف
-  - Jordanien : كتير, شو, هيك, منيح, ليش
+- **Model**: `unitary/multilingual-toxic-xlm-roberta`
+- **Type**: Multi-label classification
+- **Outputs**: toxic, severe_toxic, obscene, threat, insult, identity_hate
+- **Languages**: Multilingual (French, English, Italian, Arabic...)
+- **Loading**: At startup (~2GB) 
 
-### Détection Automatique de Langue
-- **Bibliothèque** : `langdetect`
-- **Support** : Français, Anglais, Arabe, Italien, et autres
-- **Fonctionnalité** : Reconnaissance automatique des dialectes arabes via patterns regex
-- **Optimisation** : Détection rapide pour prioriser l'analyse multilingue
+### Automatic Language Detection
+- **Library**: `langdetect`
+- **Support**: French, English, Arabic, Italian, and more
+- **Feature**: Automatic Arabic dialect recognition via regex patterns
+- **Optimization**: Fast detection to prioritize multilingual analysis
 
-### Seuils Adaptatifs
-Le score final de toxicité est basé sur le modèle multilingue avec seuils adaptatifs :
-- Italien : **35%**
-- Arabe, Français : **40%**
-- Autres langues : **45%**
+### Adaptive Thresholds
+Final toxicity score is based on the multilingual model with adaptive thresholds:
+- Italian: **35%**
+- Arabic, French: **40%**
+- Other languages: **45%**
 
-**Optimisation** : Les modèles sont chargés **UNE SEULE FOIS** au démarrage et restent en mémoire.
+**Optimization**: Models are loaded **ONCE** at startup and kept in memory.
 
 ## Performance
 
-- **Démarrage initial** : ~30-45 secondes (chargement des 2 modèles, ~2-3GB)
-- **Temps d'analyse par texte** : **~600-900ms**
-- **Mémoire** : ~4-5GB RAM (modèles en mémoire)
-- **Mémoire requise** : ~2-4GB RAM
-- **GPU support** : Automatique si disponible
+- **Initial startup**: ~30-45 seconds (loading 2 models, ~2-3GB)
+- **Analysis time per text**: **~600-900ms**
+- **Memory usage**: ~4-5GB RAM (models in memory)
+- **Memory required**: ~2-4GB RAM
+- **GPU support**: Automatic if available
 
-## Sécurité
+## Security
 
-- Pas de stockage de données utilisateur
-- Traitement en mémoire uniquement
-- CORS configurable
-- HTTPS recommandé en production
-
-## TODO
-
-- [ ] Ajouter support pour plus de langues
-- [ ] Implémenter cache pour requêtes répétées
-- [ ] Ajouter métriques et monitoring
-- [ ] Interface d'administration
-- [ ] Tests unitaires et d'intégration
-
-## Contribution
-
-Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou une pull request.
+- No user data storage
+- In-memory processing only
+- Configurable CORS
+- HTTPS recommended in production
 
 ## License
 
-MIT License - voir le fichier LICENSE
+MIT License - see LICENSE file
 
-## Équipe
+## Team
 
 Anti-Hate Hackathon - Team I
 
 ---
 
-**Note** : Ce projet utilise des modèles de Machine Learning qui nécessitent une connexion internet pour le premier téléchargement. Assurez-vous d'avoir suffisamment d'espace disque (~2-3GB) pour le cache des modèles.
+**Note**: This project uses Machine Learning models that require an internet connection for the first download. Make sure you have enough disk space (~2-3GB) for the model cache.
