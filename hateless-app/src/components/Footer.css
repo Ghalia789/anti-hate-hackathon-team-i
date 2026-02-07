@@ -1,0 +1,22 @@
+/* ==================== */
+/* Footer */
+/* ==================== */
+.footer {
+  background-color: var(--primary-blue);
+  color: var(--white);
+  text-align: center;
+  padding: 2rem;
+  margin-top: 3rem;
+}
+
+.footer a {
+  color: var(--primary-orange);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer a:hover {
+  color: var(--white);
+  text-decoration: underline;
+}
+

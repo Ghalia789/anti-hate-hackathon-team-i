@@ -1,0 +1,236 @@
+/* ==================== */
+/* Hero Section */
+/* ==================== */
+.hero {
+  background: linear-gradient(135deg, #F5F3EE 0%, #FFFBF7 100%);
+  padding: 4rem 2rem;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-content {
+  max-width: 800px;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  color: var(--primary-dark);
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.hero-tagline {
+  font-size: 1.25rem;
+  color: var(--accent-blue);
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.hero-subtitle {
+  font-size: 1rem;
+  color: var(--text-light);
+  margin-bottom: 2rem;
+  line-height: 1.8;
+}
+
+/* Mood Selector */
+.mood-selector {
+  margin: 3rem 0;
+}
+
+.mood-label {
+  font-size: 1rem;
+  color: var(--text-light);
+  margin-bottom: 1.5rem;
+}
+
+.emotions {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.emotion-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.emotion-item:hover {
+  transform: scale(1.1);
+}
+
+.emotion-icon {
+  font-size: 2.5rem;
+}
+
+.emotion-item span:last-child {
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+.mood-slider-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.mood-slider {
+  width: 100%;
+  max-width: 300px;
+  height: 6px;
+  border-radius: 5px;
+  background: linear-gradient(to right, var(--primary-green), var(--accent-pink));
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.mood-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--white);
+  cursor: pointer;
+  border: 3px solid var(--primary-green);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.mood-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--white);
+  cursor: pointer;
+  border: 3px solid var(--primary-green);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* CTA Buttons */
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+/* ==================== */
+/* Features Section */
+/* ==================== */
+.features {
+  background-color: var(--white);
+  padding: 4rem 2rem;
+}
+
+.features-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.feature-card {
+  background: linear-gradient(135deg, #F5F3EE 0%, #FFFBF7 100%);
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary-green);
+  box-shadow: 0 8px 20px rgba(91, 168, 104, 0.15);
+}
+
+.feature-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+  color: var(--primary-dark);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.feature-card p {
+  color: var(--text-light);
+  line-height: 1.7;
+}
+
+/* ==================== */
+/* Responsive Design */
+/* ==================== */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .emotions {
+    gap: 1rem;
+  }
+
+  .emotion-icon {
+    font-size: 2rem;
+  }
+
+  .emotion-item span:last-child {
+    font-size: 0.8rem;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+  }
+
+  .cta-buttons .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 2rem 1rem;
+    min-height: auto;
+  }
+
+  .hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .hero-tagline {
+    font-size: 1rem;
+  }
+
+  .emotions {
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .emotion-item {
+    gap: 0.25rem;
+  }
+
+  .emotion-icon {
+    font-size: 1.5rem;
+  }
+
+  .emotion-item span:last-child {
+    font-size: 0.7rem;
+  }
+}
