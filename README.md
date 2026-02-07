@@ -21,8 +21,7 @@ Multilingual hate speech detection powered by AI with browser extension, REST AP
 
 - **Multilingual sentiment analysis** with `cardiffnlp/twitter-xlm-roberta-base-sentiment-multilingual`
 - **Advanced toxicity detection** with `unitary/multilingual-toxic-xlm-roberta`
-- **Automatic language detection** supporting French, English, Arabic, Italian
-- **Arabic dialect recognition**: Tunisian, Moroccan, Jordanian
+- **Automatic language detection** supporting French, English, Italian and more
 - **Adaptive thresholds**: 35% Italian, 40% Arabic/French, 45% other languages
 - **Real-time browser detection** during typing
 - **Browser extension** compatible with Chrome, Firefox, Brave
