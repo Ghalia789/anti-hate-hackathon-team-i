@@ -1,6 +1,16 @@
 # API Examples
 
+## Available Services
+
+**Deployed API:** https://anti-hate-api-448414.uc.r.appspot.com/api  
+**Web App:** https://hateless-185803036804.europe-west1.run.app/  
+**Browser Extension:** Available for Chrome, Firefox, and Brave (see [Frontend README](frontend/README.md))
+
+The API is deployed on GCP App Engine and is free to use for developers. All examples below work with both the deployed API and local development server.
+
 ## Using cURL
+
+**Note:** Replace `http://localhost:5000` with `https://anti-hate-api-448414.uc.r.appspot.com` to use the deployed API.
 
 ### Health Check
 ```bash
@@ -43,7 +53,11 @@ curl -X POST http://localhost:5000/api/batch-analyze \
 ```python
 import requests
 
-API_URL = "http://localhost:5000/api"
+# Use deployed API
+API_URL = "https://anti-hate-api-448414.uc.r.appspot.com/api"
+
+# Or use local development server
+# API_URL = "http://localhost:5000/api"
 
 # Analyze text
 def analyze_text(text):
@@ -63,7 +77,11 @@ print(f"Is Toxic: {result['toxicity']['is_toxic']}")
 ## Using JavaScript
 
 ```javascript
-const API_URL = 'http://localhost:5000/api';
+// Use deployed API
+const API_URL = 'https://anti-hate-api-448414.uc.r.appspot.com/api';
+
+// Or use local development server
+// const API_URL = 'http://localhost:5000/api';
 
 async function analyzeText(text) {
   const response = await fetch(`${API_URL}/analyze`, {

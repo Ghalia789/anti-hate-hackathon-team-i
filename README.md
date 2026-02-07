@@ -2,8 +2,9 @@
 
 Multilingual hate speech detection powered by AI with browser extension, REST API, and web app.
 
-**API:** Deployed on GCP App Engine  
-**Web App:** https://hateless-185803036804.europe-west1.run.app/
+**API:** Deployed on GCP App Engine - https://anti-hate-api-448414.uc.r.appspot.com/api  
+**Web App:** https://hateless-185803036804.europe-west1.run.app/  
+**Browser Extension:** Available for Chrome, Firefox, and Brave
 
 > **Note:** With the API deployed on GCP App Engine, both the web app and browser extension provide instant responses with pre-loaded ML models (~600-900ms). The API is open and free for developers to integrate into their applications.
 
